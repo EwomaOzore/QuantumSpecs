@@ -1,16 +1,16 @@
 import { OpsFilterBar } from "@/components/ops/filter-bar";
-import { IncidentsBoard } from "@/components/ops/incidents-board";
+import { NetworkTable } from "@/components/ops/network-table";
 import { PageLoader } from "@/components/ui/page-loader";
 import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
-export default function IncidentsPage() {
+export default function NetworkPage() {
   return (
     <Suspense fallback={<PageLoader />}>
       <div>
         <OpsFilterBar />
-        <IncidentsBoard />
+        <NetworkTable />
       </div>
     </Suspense>
   );

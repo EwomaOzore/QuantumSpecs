@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   Activity,
   Bot,
   FlaskConical,
+  Globe2,
   LayoutDashboard,
+  RadioTower,
   Settings,
   ShieldAlert,
   Users,
@@ -16,18 +18,23 @@ import { cn } from "@/lib/utils";
 import { Mark } from "@/components/ui/mark";
 
 const NAV = [
-  { href: "/", label: "Overview", icon: LayoutDashboard },
-  { href: "/analytics", label: "Analytics", icon: Activity },
-  { href: "/customers", label: "Customers", icon: Users },
-  { href: "/incidents", label: "Incidents", icon: ShieldAlert },
-  { href: "/agent", label: "AI Agent", icon: Bot },
-  { href: "/workflows", label: "Workflows", icon: Workflow },
-  { href: "/evaluation", label: "AI Evaluation", icon: FlaskConical },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/", label: "Command", icon: LayoutDashboard, keepFilters: true },
+  { href: "/globe", label: "Globe", icon: Globe2, keepFilters: true },
+  { href: "/network", label: "Network", icon: RadioTower, keepFilters: true },
+  { href: "/incidents", label: "Incidents", icon: ShieldAlert, keepFilters: true },
+  { href: "/analytics", label: "Analytics", icon: Activity, keepFilters: false },
+  { href: "/customers", label: "Customers", icon: Users, keepFilters: false },
+  { href: "/agent", label: "AI Agent", icon: Bot, keepFilters: false },
+  { href: "/workflows", label: "Workflows", icon: Workflow, keepFilters: false },
+  { href: "/evaluation", label: "AI Evaluation", icon: FlaskConical, keepFilters: false },
+  { href: "/settings", label: "Settings", icon: Settings, keepFilters: false },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
+  const params = useSearchParams();
+  const qs = params.toString();
+
   return (
     <aside className="flex h-full w-[220px] shrink-0 flex-col border-r border-qs-border bg-qs-bg-2">
       <div className="flex items-center gap-2.5 px-4 py-4">
@@ -37,14 +44,15 @@ export function Sidebar() {
           <div className="text-[10px] uppercase tracking-[0.16em] text-qs-faint">Operations</div>
         </div>
       </div>
-      <nav className="flex flex-1 flex-col gap-0.5 px-2 py-1">
+      <nav className="flex flex-1 flex-col gap-0.5 overflow-auto px-2 py-1">
         {NAV.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           const Icon = item.icon;
+          const href = item.keepFilters && qs ? `${item.href}?${qs}` : item.href;
           return (
             <Link
               key={item.href}
-              href={item.href}
+              href={href}
               className={cn(
                 "flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-[13px] transition-colors",
                 active
@@ -61,7 +69,7 @@ export function Sidebar() {
       <div className="border-t border-qs-border px-4 py-3">
         <div className="text-[11px] uppercase tracking-[0.14em] text-qs-faint">Workspace</div>
         <div className="mt-1 text-[13px] text-qs-text">Kora · production</div>
-        <div className="mt-0.5 text-[11px] text-qs-muted">5 regions live</div>
+        <div className="mt-0.5 text-[11px] text-qs-muted">21 cities · globe live</div>
       </div>
     </aside>
   );

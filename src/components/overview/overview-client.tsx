@@ -2,15 +2,17 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { OpsChart, type SeriesPoint } from "@/components/charts/ops-chart";
 import { Badge, severityTone, statusTone } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Kpi } from "@/components/ui/kpi";
-import { RegionFlag } from "@/components/ui/region-flag";
 import { formatCompact, formatPercent, formatRelative, formatUsd, greeting } from "@/lib/format";
 import { OPERATOR } from "@/lib/constants";
+import { DEFAULT_HUB, OPS_HUBS, hubKpis } from "@/lib/ops-geo";
+import { getOpsEvents, regionalRollup } from "@/lib/ops-network";
+import { useOpsFilters } from "@/lib/use-ops-filters";
 
 type Overview = {
   now: string;
@@ -68,7 +70,15 @@ export function OverviewClient({ data }: { data: Overview }) {
   const [ingesting, setIngesting] = useState(false);
   const start = data.alert.start.slice(11, 16);
   const end = data.alert.end.slice(11, 16);
+  const { filters, hub, hrefFor, selectHub } = useOpsFilters();
+  const kpis = hubKpis(hub);
+  const events = getOpsEvents().filter((e) => e.citySlug === hub.slug).slice(0, 8);
+  const rollup = regionalRollup();
   const query = "Why did checkout failures increase this morning?";
+
+  useEffect(() => {
+    if (!filters.city) selectHub(DEFAULT_HUB);
+  }, [filters.city, selectHub]);
 
   async function simulateTraffic() {
     setIngesting(true);
@@ -89,23 +99,34 @@ export function OverviewClient({ data }: { data: Overview }) {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-[22px] font-medium tracking-tight">
-            {greeting(new Date(data.now))}, {OPERATOR.name}
+            {hub.name}
           </h1>
           <p className="mt-1 text-[13px] text-qs-muted">
-            Kora production · Nigeria · Ghana · Kenya · South Africa · UK
+            {greeting(new Date(data.now))}, {OPERATOR.name} · {hub.country} · {hub.region}
+            {hub.isHub ? " · primary hub" : ""}
           </p>
         </div>
         <div className="flex gap-2">
           <Button onClick={() => void simulateTraffic()} disabled={ingesting}>
             {ingesting ? "Writing traffic…" : "Simulate traffic"}
           </Button>
-          <Button variant="primary" onClick={() => router.push(`/agent?q=${encodeURIComponent(query)}`)}>
+          <Button variant="primary" onClick={() => router.push(hrefFor("/globe"))}>
+            Open globe
+          </Button>
+          <Button onClick={() => router.push(`/agent?q=${encodeURIComponent(query)}`)}>
             Ask the analyst
           </Button>
         </div>
       </div>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+        <Kpi label="Hub revenue" value={formatUsd(kpis.revenueUsd)} hint={hub.name} />
+        <Kpi
+          label="Uptime"
+          value={formatPercent(kpis.uptimePct)}
+          hint="network SLO"
+          tone={kpis.uptimePct < 99.5 ? "warning" : "success"}
+        />
         <Kpi
           label="Revenue"
           value={formatUsd(data.today.revenueUsd)}
@@ -179,22 +200,25 @@ export function OverviewClient({ data }: { data: Overview }) {
           </div>
         </Card>
         <Card>
-          <CardHeader title="Regional health" description="Last 24 hours" />
+          <CardHeader title="Regional rollup" description="Sites by corridor" />
           <div className="divide-y divide-qs-border">
-            {data.today.byRegion.map((r) => (
-              <div key={r.code} className="flex items-center justify-between px-4 py-2.5">
-                <div className="flex items-center gap-2">
-                  <RegionFlag code={r.code} />
-                  <span className="text-[13px]">{r.name}</span>
-                </div>
+            {rollup.map((r) => (
+              <button
+                key={r.regionSlug}
+                type="button"
+                className="flex w-full items-center justify-between px-4 py-2.5 text-left hover:bg-qs-hover"
+                onClick={() => {
+                  const next = OPS_HUBS.find((h) => h.regionSlug === r.regionSlug && h.isPrimary);
+                  if (next) selectHub(next, "/network");
+                }}
+              >
+                <span className="text-[13px]">{r.region}</span>
                 <div className="flex items-center gap-4 font-mono text-[12px] tabular text-qs-muted">
-                  <span>{formatUsd(r.revenueUsd)}</span>
-                  <span className={r.count && r.failed / r.count > 0.05 ? "text-qs-danger" : ""}>
-                    {formatPercent((r.count ? r.failed / r.count : 0) * 100)}
-                  </span>
-                  <span>{Math.round(r.avgLatencyMs)}ms</span>
+                  <span>{r.count.toLocaleString()}</span>
+                  <span className={r.down ? "text-qs-danger" : ""}>{r.down} down</span>
+                  <span>{formatUsd(r.revenue)}</span>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </Card>
@@ -205,7 +229,7 @@ export function OverviewClient({ data }: { data: Overview }) {
           <CardHeader
             title="Incidents"
             action={
-              <Link href="/incidents" className="text-[12px] text-qs-accent">
+              <Link href={hrefFor("/incidents")} className="text-[12px] text-qs-accent">
                 View all
               </Link>
             }
@@ -233,20 +257,14 @@ export function OverviewClient({ data }: { data: Overview }) {
           </div>
         </Card>
         <Card>
-          <CardHeader title="Deployments" />
+          <CardHeader title="Live event feed" description={hub.name} />
           <div className="divide-y divide-qs-border">
-            {data.deployments.map((d) => (
-              <div key={d.id} className="flex items-center justify-between px-4 py-2.5">
-                <div>
-                  <div className="font-mono text-[13px]">
-                    {d.service}
-                    <span className="text-qs-muted">@{d.version}</span>
-                  </div>
-                  <div className="text-[11px] text-qs-faint">
-                    {d.deployedBy} · {formatRelative(d.deployedAt)}
-                  </div>
+            {events.map((event) => (
+              <div key={event.id} className="px-4 py-2.5">
+                <div className="text-[13px]">{event.message}</div>
+                <div className="mt-0.5 text-[11px] text-qs-faint">
+                  {event.type} · {event.status} · {formatRelative(event.at)}
                 </div>
-                <Badge tone={statusTone(d.status)}>{d.status}</Badge>
               </div>
             ))}
           </div>

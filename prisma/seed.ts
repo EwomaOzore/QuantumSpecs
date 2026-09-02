@@ -1,4 +1,4 @@
-import { PrismaClient } from "../src/generated/prisma";
+import { PrismaClient } from "@prisma/client";
 import { FX_TO_USD, PROVIDERS, REGIONS, SERVICES } from "../src/lib/constants";
 import { spikeWindow } from "../src/lib/clock";
 import { id } from "../src/lib/id";
