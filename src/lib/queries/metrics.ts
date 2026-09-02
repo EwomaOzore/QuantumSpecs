@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { spikeWindow } from "@/lib/clock";
+import { ensureFreshTraffic } from "@/lib/traffic";
 
 export type MetricFilters = {
   from: Date;
@@ -180,6 +181,11 @@ export async function getTimeSeries(filters: MetricFilters, bucketMinutes = 15) 
 }
 
 export async function getOverview() {
+  try {
+    await ensureFreshTraffic();
+  } catch {
+    /* keep serving even if ingest is down */
+  }
   const now = new Date();
   const dayAgo = new Date(now.getTime() - 24 * 3600 * 1000);
   const twoDaysAgo = new Date(now.getTime() - 48 * 3600 * 1000);

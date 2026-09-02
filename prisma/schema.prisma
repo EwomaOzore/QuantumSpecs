@@ -179,6 +179,7 @@ model AgentRun {
   evidenceJson      String
   actionsJson       String
   toolCallsJson     String
+  confidence        Float    @default(0)
   latencyMs         Int
   promptTokens      Int      @default(0)
   completionTokens  Int      @default(0)

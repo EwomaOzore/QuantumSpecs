@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
+import { requireUser } from "@/lib/auth-guard";
 import { prisma } from "@/lib/db";
 
 export const runtime = "nodejs";
 
 export async function GET() {
+  const { error } = await requireUser();
+  if (error) return error;
+
   const items = await prisma.notification.findMany({
     orderBy: { createdAt: "desc" },
     take: 30,
@@ -13,6 +17,9 @@ export async function GET() {
 }
 
 export async function PATCH(request: Request) {
+  const { error } = await requireUser();
+  if (error) return error;
+
   const body = (await request.json()) as { id?: string; all?: boolean };
   const now = new Date();
 

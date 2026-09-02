@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
+import { requireUser } from "@/lib/auth-guard";
 import { getOverview, getTimeSeries, getTransactionMetrics } from "@/lib/queries/metrics";
 
 export const runtime = "nodejs";
 
 export async function GET(request: Request) {
+  const { error } = await requireUser();
+  if (error) return error;
+
   const url = new URL(request.url);
   const view = url.searchParams.get("view") ?? "overview";
   const hours = Number(url.searchParams.get("hours") ?? 24);

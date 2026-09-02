@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { OpsChart, type SeriesPoint } from "@/components/charts/ops-chart";
 import { Badge, severityTone, statusTone } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -64,9 +65,24 @@ function delta(current: number, prev: number) {
 
 export function OverviewClient({ data }: { data: Overview }) {
   const router = useRouter();
+  const [ingesting, setIngesting] = useState(false);
   const start = data.alert.start.slice(11, 16);
   const end = data.alert.end.slice(11, 16);
   const query = "Why did checkout failures increase this morning?";
+
+  async function simulateTraffic() {
+    setIngesting(true);
+    try {
+      await fetch("/api/ingest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ count: 40 }),
+      });
+      router.refresh();
+    } finally {
+      setIngesting(false);
+    }
+  }
 
   return (
     <div className="px-6 py-5">
@@ -79,9 +95,14 @@ export function OverviewClient({ data }: { data: Overview }) {
             Kora production · Nigeria · Ghana · Kenya · South Africa · UK
           </p>
         </div>
-        <Button variant="primary" onClick={() => router.push(`/agent?q=${encodeURIComponent(query)}`)}>
-          Ask the analyst
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => void simulateTraffic()} disabled={ingesting}>
+            {ingesting ? "Writing traffic…" : "Simulate traffic"}
+          </Button>
+          <Button variant="primary" onClick={() => router.push(`/agent?q=${encodeURIComponent(query)}`)}>
+            Ask the analyst
+          </Button>
+        </div>
       </div>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
