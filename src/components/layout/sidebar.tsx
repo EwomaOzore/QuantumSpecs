@@ -37,13 +37,13 @@ export function Sidebar() {
 
   return (
     <aside className="flex h-full w-[220px] shrink-0 flex-col border-r border-qs-border bg-qs-bg-2">
-      <div className="flex items-center gap-2.5 px-4 py-4">
+      <Link href="/" className="flex items-center gap-2.5 px-4 py-4 hover:bg-qs-hover" aria-label="QuantumSpecs home">
         <Mark className="h-6 w-6 text-qs-accent" />
         <div>
           <div className="text-[13px] font-semibold tracking-tight">QuantumSpecs</div>
           <div className="text-[10px] uppercase tracking-[0.16em] text-qs-faint">Operations</div>
         </div>
-      </div>
+      </Link>
       <nav className="flex flex-1 flex-col gap-0.5 overflow-auto px-2 py-1">
         {NAV.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -70,6 +70,20 @@ export function Sidebar() {
         <div className="text-[11px] uppercase tracking-[0.14em] text-qs-faint">Workspace</div>
         <div className="mt-1 text-[13px] text-qs-text">Kora · production</div>
         <div className="mt-0.5 text-[11px] text-qs-muted">21 cities · globe live</div>
+        <nav aria-label="Related" className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-qs-muted">
+          <Link href="/" className="hover:text-qs-text">
+            Command
+          </Link>
+          <Link href="/globe" className="hover:text-qs-text">
+            Globe
+          </Link>
+          <Link href="/network" className="hover:text-qs-text">
+            Network
+          </Link>
+          <Link href="/incidents" className="hover:text-qs-text">
+            Incidents
+          </Link>
+        </nav>
       </div>
     </aside>
   );

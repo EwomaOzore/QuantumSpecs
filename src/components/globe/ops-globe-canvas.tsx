@@ -139,6 +139,8 @@ export function OpsGlobeCanvas({
     <div
       ref={containerRef}
       data-testid="ops-globe"
+      role="img"
+      aria-label="Interactive Earth of Kora operations hubs and country borders"
       className="relative h-full w-full overflow-hidden bg-[#04070b]"
     >
       {!ready ? (

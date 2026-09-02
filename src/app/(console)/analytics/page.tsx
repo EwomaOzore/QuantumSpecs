@@ -1,7 +1,10 @@
 import { AnalyticsClient } from "@/components/analytics/analytics-client";
+import { PageSource } from "@/components/seo/page-source";
 import { getTimeSeries, getTransactionMetrics } from "@/lib/queries/metrics";
+import { pageMetadata } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
+export const metadata = pageMetadata("/analytics");
 
 export default async function AnalyticsPage() {
   const now = new Date();
@@ -11,9 +14,12 @@ export default async function AnalyticsPage() {
     getTimeSeries({ from, to: now }, 20),
   ]);
   return (
-    <AnalyticsClient
-      initial={JSON.parse(JSON.stringify(metrics))}
-      series={JSON.parse(JSON.stringify(series))}
-    />
+    <>
+      <PageSource path="/analytics" />
+      <AnalyticsClient
+        initial={JSON.parse(JSON.stringify(metrics))}
+        series={JSON.parse(JSON.stringify(series))}
+      />
+    </>
   );
 }

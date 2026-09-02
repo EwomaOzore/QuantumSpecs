@@ -1,10 +1,13 @@
 import Link from "next/link";
+import { PageSource } from "@/components/seo/page-source";
 import { Badge, statusTone } from "@/components/ui/badge";
 import { RegionFlag } from "@/components/ui/region-flag";
 import { formatUsd } from "@/lib/format";
 import { listCustomers } from "@/lib/queries/customers";
+import { pageMetadata } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
+export const metadata = pageMetadata("/customers");
 
 export default async function CustomersPage({
   searchParams,
@@ -16,6 +19,7 @@ export default async function CustomersPage({
 
   return (
     <div className="px-6 py-5">
+      <PageSource path="/customers" className="mb-3 px-0 pt-0" />
       <h1 className="text-[18px] font-medium">Customers</h1>
       <p className="mt-1 text-[13px] text-qs-muted">
         Kora merchants across NGN, GHS, KES, ZAR and GBP corridors.

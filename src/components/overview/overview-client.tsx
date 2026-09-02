@@ -196,7 +196,15 @@ export function OverviewClient({ data }: { data: Overview }) {
           </div>
         </Card>
         <Card>
-          <CardHeader title="Regional rollup" description="Sites by corridor" />
+          <CardHeader
+            title="Regional rollup"
+            description="Sites by corridor"
+            action={
+              <Link href={hrefFor("/network")} className="text-[12px] text-qs-accent">
+                Open network
+              </Link>
+            }
+          />
           <div className="divide-y divide-qs-border">
             {rollup.map((r) => (
               <button
@@ -253,7 +261,15 @@ export function OverviewClient({ data }: { data: Overview }) {
           </div>
         </Card>
         <Card>
-          <CardHeader title="Live event feed" description={hub.name} />
+          <CardHeader
+            title="Live event feed"
+            description={hub.name}
+            action={
+              <Link href={hrefFor("/globe")} className="text-[12px] text-qs-accent">
+                Open globe
+              </Link>
+            }
+          />
           <div className="divide-y divide-qs-border">
             {events.map((event) => (
               <div key={event.id} className="px-4 py-2.5">

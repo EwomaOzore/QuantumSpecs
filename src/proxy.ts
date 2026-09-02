@@ -7,5 +7,7 @@ export const proxy = auth;
 export default proxy;
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|llms.txt|icon|apple-icon|opengraph-image|twitter-image).*)",
+  ],
 };
