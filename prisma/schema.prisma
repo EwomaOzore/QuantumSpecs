@@ -1,0 +1,217 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Region {
+  id           String        @id
+  code         String        @unique
+  name         String
+  country      String
+  currency     String
+  timezone     String
+  customers    Customer[]
+  transactions Transaction[]
+  incidents    Incident[]
+}
+
+model PaymentProvider {
+  id           String        @id
+  slug         String        @unique
+  name         String
+  type         String
+  regionsJson  String
+  transactions Transaction[]
+}
+
+model Customer {
+  id               String        @id
+  name             String
+  email            String        @unique
+  company          String
+  segment          String
+  regionId         String
+  region           Region        @relation(fields: [regionId], references: [id])
+  kycStatus        String
+  riskScore        Float
+  createdAt        DateTime
+  monthlyVolumeUsd Float
+  transactions     Transaction[]
+}
+
+model Transaction {
+  id           String          @id
+  customerId   String
+  customer     Customer        @relation(fields: [customerId], references: [id])
+  regionId     String
+  region       Region          @relation(fields: [regionId], references: [id])
+  providerId   String
+  provider     PaymentProvider @relation(fields: [providerId], references: [id])
+  amount       Float
+  currency     String
+  amountUsd    Float
+  status       String
+  method       String
+  channel      String
+  errorCode    String?
+  errorMessage String?
+  latencyMs    Int
+  endpoint     String          @default("/v1/checkout")
+  createdAt    DateTime
+
+  @@index([createdAt])
+  @@index([status, createdAt])
+  @@index([regionId, createdAt])
+  @@index([providerId, createdAt])
+  @@index([channel, createdAt])
+  @@index([customerId, createdAt])
+}
+
+model Deployment {
+  id              String   @id
+  service         String
+  version         String
+  previousVersion String?
+  environment     String
+  status          String
+  deployedAt      DateTime
+  deployedBy      String
+  changelog       String
+  sha             String
+}
+
+model Incident {
+  id         String          @id
+  title      String
+  severity   String
+  status     String
+  regionId   String?
+  region     Region?         @relation(fields: [regionId], references: [id])
+  summary    String
+  createdAt  DateTime
+  resolvedAt DateTime?
+  createdBy  String
+  assignee   String?
+  events     IncidentEvent[]
+}
+
+model IncidentEvent {
+  id         String   @id
+  incidentId String
+  incident   Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  at         DateTime
+  actor      String
+  kind       String
+  message    String
+}
+
+model ServiceLog {
+  id         String   @id
+  service    String
+  level      String
+  message    String
+  regionCode String?
+  latencyMs  Int?
+  createdAt  DateTime
+  metaJson   String   @default("{}")
+
+  @@index([createdAt])
+  @@index([service, createdAt])
+  @@index([level, createdAt])
+}
+
+model Workflow {
+  id          String        @id
+  name        String
+  description String
+  trigger     String
+  enabled     Boolean
+  stepsJson   String
+  lastRunAt   DateTime?
+  lastStatus  String?
+  runCount    Int           @default(0)
+  runs        WorkflowRun[]
+}
+
+model WorkflowRun {
+  id         String    @id
+  workflowId String
+  workflow   Workflow  @relation(fields: [workflowId], references: [id])
+  startedAt  DateTime
+  finishedAt DateTime?
+  status     String
+  logJson    String
+}
+
+model Notification {
+  id        String   @id
+  team      String
+  channel   String
+  message   String
+  createdAt DateTime
+  status    String
+}
+
+model PaymentRoute {
+  id              String    @id
+  providerId      String
+  regionCode      String
+  enabled         Boolean   @default(true)
+  disabledAt      DateTime?
+  disabledReason  String?
+
+  @@unique([providerId, regionCode])
+}
+
+model AgentRun {
+  id                String   @id
+  query             String
+  summary           String
+  evidenceJson      String
+  actionsJson       String
+  toolCallsJson     String
+  latencyMs         Int
+  promptTokens      Int      @default(0)
+  completionTokens  Int      @default(0)
+  model             String
+  createdAt         DateTime @default(now())
+}
+
+model EvalRun {
+  id             String       @id
+  agentName      String
+  model          String
+  averageScore   Float
+  createdAt      DateTime     @default(now())
+  cases          EvalCaseRun[]
+}
+
+model EvalCaseRun {
+  id            String   @id
+  evalRunId     String
+  evalRun       EvalRun  @relation(fields: [evalRunId], references: [id], onDelete: Cascade)
+  caseId        String
+  query         String
+  passed        Boolean
+  score         Float
+  latencyMs     Int
+  tokenUsage    Int      @default(0)
+  toolCallsJson String
+  notes         String
+  createdAt     DateTime @default(now())
+}
+
+model TeamMember {
+  id     String @id
+  name   String
+  email  String @unique
+  role   String
+  team   String
+  region String?
+  status String
+}

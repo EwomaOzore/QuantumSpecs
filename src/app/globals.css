@@ -1,26 +1,91 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --qs-bg: #07090c;
+  --qs-bg-2: #0b0f14;
+  --qs-surface: #10161e;
+  --qs-elevated: #161d27;
+  --qs-hover: #1c2531;
+  --qs-border: #243042;
+  --qs-border-strong: #33445c;
+  --qs-text: #e8eef6;
+  --qs-muted: #8b97a8;
+  --qs-faint: #5d6b7c;
+  --qs-accent: #2ee6d6;
+  --qs-accent-2: #149e93;
+  --qs-accent-soft: rgba(46, 230, 214, 0.12);
+  --qs-danger: #f07178;
+  --qs-danger-soft: rgba(240, 113, 120, 0.12);
+  --qs-warning: #e8b84a;
+  --qs-warning-soft: rgba(232, 184, 74, 0.12);
+  --qs-success: #3ecf8e;
+  --qs-success-soft: rgba(62, 207, 142, 0.12);
+  --qs-info: #6ba4f8;
+  --qs-info-soft: rgba(107, 164, 248, 0.12);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-qs-bg: var(--qs-bg);
+  --color-qs-bg-2: var(--qs-bg-2);
+  --color-qs-surface: var(--qs-surface);
+  --color-qs-elevated: var(--qs-elevated);
+  --color-qs-hover: var(--qs-hover);
+  --color-qs-border: var(--qs-border);
+  --color-qs-border-strong: var(--qs-border-strong);
+  --color-qs-text: var(--qs-text);
+  --color-qs-muted: var(--qs-muted);
+  --color-qs-faint: var(--qs-faint);
+  --color-qs-accent: var(--qs-accent);
+  --color-qs-accent-2: var(--qs-accent-2);
+  --color-qs-danger: var(--qs-danger);
+  --color-qs-warning: var(--qs-warning);
+  --color-qs-success: var(--qs-success);
+  --color-qs-info: var(--qs-info);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--qs-bg);
+  color: var(--qs-text);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+.qs-grid {
+  background-image:
+    linear-gradient(to right, rgba(36, 48, 66, 0.35) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(36, 48, 66, 0.35) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.qs-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.qs-scroll::-webkit-scrollbar-thumb {
+  background: var(--qs-border-strong);
+  border-radius: 99px;
+}
+
+@keyframes qs-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.live-dot {
+  animation: qs-pulse 1.8s ease-in-out infinite;
 }
