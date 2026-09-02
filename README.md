@@ -84,7 +84,7 @@ Sign in on the live site with a seeded team email (`ewoma@kora.pay`) and `CONSOL
 
 ## Seeded scenario
 
-Each reset plants a checkout regression a few hours behind the current time: `checkout-api@2.14.3`, Paystack NG latency, mobile timeouts. Overview surfaces it; the analyst can investigate it. Opening Overview also writes a small batch of live checkouts if traffic has gone stale. **Simulate traffic** does the same on demand. An hourly cron (`/api/cron/tick`) ingests more volume and auto-runs notify/page steps when a playbook trigger matches.
+Each reset plants a checkout regression a few hours behind the current time: `checkout-api@2.14.3`, Paystack NG latency, mobile timeouts. Overview surfaces it; the analyst can investigate it. Opening Overview also writes a small batch of live checkouts if traffic has gone stale. **Simulate traffic** does the same on demand. A daily cron (`/api/cron/tick`) ingests more volume and auto-runs notify/page steps when a playbook trigger matches.
 
 ## Tools
 
