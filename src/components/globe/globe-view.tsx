@@ -1,11 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Kpi } from "@/components/ui/kpi";
 import { formatPercent, formatUsd } from "@/lib/format";
-import { DEFAULT_HUB, PRIMARY_HUBS, hubKpis } from "@/lib/ops-geo";
+import { PRIMARY_HUBS, hubKpis } from "@/lib/ops-geo";
 import { getOpsSites } from "@/lib/ops-network";
 import { useOpsFilters } from "@/lib/use-ops-filters";
 import { cn } from "@/lib/utils";
@@ -19,11 +18,7 @@ const OpsGlobeCanvas = dynamic(
 );
 
 export function GlobeView() {
-  const { filters, hub, selectHub } = useOpsFilters();
-
-  useEffect(() => {
-    if (!filters.city) selectHub(DEFAULT_HUB);
-  }, [filters.city, selectHub]);
+  const { hub, selectHub } = useOpsFilters();
 
   const kpis = hubKpis(hub);
   const siteCount = getOpsSites().filter((s) => s.citySlug === hub.slug).length;

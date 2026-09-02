@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { OpsChart, type SeriesPoint } from "@/components/charts/ops-chart";
 import { Badge, severityTone, statusTone } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { Kpi } from "@/components/ui/kpi";
 import { formatCompact, formatPercent, formatRelative, formatUsd, greeting } from "@/lib/format";
 import { OPERATOR } from "@/lib/constants";
-import { DEFAULT_HUB, OPS_HUBS, hubKpis } from "@/lib/ops-geo";
+import { OPS_HUBS, hubKpis } from "@/lib/ops-geo";
 import { getOpsEvents, regionalRollup } from "@/lib/ops-network";
 import { useOpsFilters } from "@/lib/use-ops-filters";
 
@@ -70,15 +70,11 @@ export function OverviewClient({ data }: { data: Overview }) {
   const [ingesting, setIngesting] = useState(false);
   const start = data.alert.start.slice(11, 16);
   const end = data.alert.end.slice(11, 16);
-  const { filters, hub, hrefFor, selectHub } = useOpsFilters();
+  const { hub, hrefFor, selectHub } = useOpsFilters();
   const kpis = hubKpis(hub);
   const events = getOpsEvents().filter((e) => e.citySlug === hub.slug).slice(0, 8);
   const rollup = regionalRollup();
   const query = "Why did checkout failures increase this morning?";
-
-  useEffect(() => {
-    if (!filters.city) selectHub(DEFAULT_HUB);
-  }, [filters.city, selectHub]);
 
   async function simulateTraffic() {
     setIngesting(true);
