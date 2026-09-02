@@ -37,7 +37,7 @@ export function Topbar() {
       <div className="flex items-center gap-3">
         <div className="hidden items-center gap-1.5 rounded-md border border-qs-border bg-qs-surface px-2 py-1 text-[11px] text-qs-faint md:flex">
           <Command className="h-3 w-3" />
-          K to ask the agent
+          K to jump cities
         </div>
         <div className="font-mono text-[12px] tabular text-qs-muted">
           {now ? `${format(now, "HH:mm:ss")} UTC` : "—"}
