@@ -51,8 +51,7 @@ export function EvaluationClient() {
         <div>
           <h1 className="text-[18px] font-medium">AI evaluation</h1>
           <p className="mt-1 text-[13px] text-qs-muted">
-            Agent: Operations Analyst. The suite checks tool selection, evidence grounding, latency and failed calls —
-            not vibes.
+            Agent: Operations Analyst. Scores tool selection, evidence grounding, latency, and failed calls.
           </p>
         </div>
         <Button variant="primary" onClick={() => run.mutate()} disabled={run.isPending}>
@@ -134,7 +133,7 @@ export function EvaluationClient() {
         <Card className="px-4 py-3">
           <div className="text-[13px] font-medium">Failed tool calls</div>
           <p className="mt-1 text-[12px] leading-5 text-qs-muted">
-            A case cannot pass if any tool in the trace errored — even if the prose looks confident.
+            A case cannot pass if any tool in the trace errored.
           </p>
         </Card>
         <Card className="px-4 py-3">

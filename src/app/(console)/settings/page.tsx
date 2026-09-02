@@ -17,7 +17,7 @@ export default async function SettingsPage() {
     <div className="px-6 py-5">
       <h1 className="text-[18px] font-medium">Settings</h1>
       <p className="mt-1 text-[13px] text-qs-muted">
-        {TENANT.legalName} · production workspace wired to live seed telemetry.
+        {TENANT.legalName} · production
       </p>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
@@ -131,7 +131,7 @@ export default async function SettingsPage() {
       </div>
 
       <Card className="mt-4">
-        <CardHeader title="Integrations" description="Declared for the Kora story — not live vendor calls" />
+        <CardHeader title="Integrations" description="Payment providers and paging for this workspace" />
         <div className="grid gap-2 px-4 py-3 sm:grid-cols-3">
           {[...PROVIDERS.map((p) => p.name), "Slack", "PagerDuty", "Linear"].map((name) => (
             <div key={name} className="rounded-md border border-qs-border px-3 py-2 text-[13px]">
