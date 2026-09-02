@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useMemo } from "react";
-import { findHub, type OpsHub } from "@/lib/ops-geo";
+import { useCallback, useEffect, useMemo } from "react";
+import { DEFAULT_HUB, findHub, type OpsHub } from "@/lib/ops-geo";
 import {
   DEFAULT_OPS_FILTERS,
   filtersHref,
@@ -17,6 +17,18 @@ export function useOpsFilters() {
   const searchParams = useSearchParams();
   const filters = useMemo(() => parseOpsFilters(searchParams), [searchParams]);
   const hub = useMemo(() => findHub(filters.city || "lagos"), [filters.city]);
+
+  useEffect(() => {
+    if (filters.city) return;
+    const qs = serializeOpsFilters(
+      { region: DEFAULT_HUB.regionSlug, city: DEFAULT_HUB.slug },
+      filters,
+    ).toString();
+    const url = `${pathname}?${qs}`;
+    const current = searchParams.toString() ? `${pathname}?${searchParams.toString()}` : pathname;
+    if (current === url) return;
+    window.history.replaceState(window.history.state, "", url);
+  }, [filters, pathname, searchParams]);
 
   const replace = useCallback(
     (patch: Partial<OpsFilters>, path = pathname) => {

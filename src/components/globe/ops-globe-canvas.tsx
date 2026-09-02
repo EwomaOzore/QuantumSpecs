@@ -16,7 +16,6 @@ import {
 const EARTH = "https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-blue-marble.jpg";
 const BUMP = "https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-topology.png";
 const COUNTRIES = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
-const NIGERIA_CLICK = { lat: 9.082, lng: 8.6753 };
 
 type CountryFeature = Feature<Geometry, { name: string }>;
 
@@ -51,8 +50,6 @@ export function OpsGlobeCanvas({
   const [countries, setCountries] = useState<CountryFeature[]>([]);
   const [hover, setHover] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
-  const [earthReady, setEarthReady] = useState(false);
-  const [earthError, setEarthError] = useState(false);
   const arcs = useMemo(() => hubArcs(), []);
 
   useEffect(() => {
@@ -70,13 +67,7 @@ export function OpsGlobeCanvas({
 
   useEffect(() => {
     let cancelled = false;
-    loadImage(EARTH)
-      .then(() => {
-        if (!cancelled) setEarthReady(true);
-      })
-      .catch(() => {
-        if (!cancelled) setEarthError(true);
-      });
+    void loadImage(EARTH).catch(() => undefined);
     void loadImage(BUMP).catch(() => undefined);
     fetch(COUNTRIES)
       .then((res) => res.json())
@@ -107,19 +98,9 @@ export function OpsGlobeCanvas({
     if (!ready) return;
     const el = containerRef.current;
     if (!el) return;
-    const writeHit = () => {
-      const globe = globeRef.current;
-      if (!globe) return;
-      const coords = globe.getScreenCoords(NIGERIA_CLICK.lat, NIGERIA_CLICK.lng);
-      el.dataset.nigeriaX = String(Math.round(coords.x));
-      el.dataset.nigeriaY = String(Math.round(coords.y));
-      el.dataset.ready = "1";
-      el.dataset.countries = String(countries.length);
-    };
-    writeHit();
-    const id = window.setInterval(writeHit, 200);
-    return () => window.clearInterval(id);
-  }, [ready, hub, size, countries.length]);
+    el.dataset.ready = "1";
+    el.dataset.countries = String(countries.length);
+  }, [ready, countries.length]);
 
   const handleReady = useCallback(() => {
     const globe = globeRef.current;
@@ -135,6 +116,9 @@ export function OpsGlobeCanvas({
     controls.addEventListener("start", stop);
     const current = hubRef.current;
     globe.pointOfView({ lat: current.lat, lng: current.lng, altitude: 1.85 }, 0);
+    if (containerRef.current) {
+      containerRef.current.dataset.ready = "1";
+    }
     setReady(true);
   }, []);
 
@@ -157,15 +141,10 @@ export function OpsGlobeCanvas({
       data-testid="ops-globe"
       className="relative h-full w-full overflow-hidden bg-[#04070b]"
     >
-      {!ready || !earthReady ? (
+      {!ready ? (
         <div className="absolute inset-0 z-10 animate-pulse bg-[radial-gradient(circle_at_center,#12202c,transparent_55%)]" />
       ) : null}
-      {earthError ? (
-        <div className="absolute inset-0 z-20 flex items-center justify-center text-[13px] text-qs-muted">
-          Earth imagery failed to load. Check the network and retry.
-        </div>
-      ) : null}
-      {size.width > 0 && earthReady ? (
+      {size.width > 0 ? (
         <Globe
           ref={globeRef}
           width={size.width}
