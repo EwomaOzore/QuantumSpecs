@@ -1,9 +1,10 @@
 "use client";
 
-import { Bell, Command } from "lucide-react";
+import { Command } from "lucide-react";
 import { useSyncExternalStore } from "react";
 import { format } from "date-fns";
 import { OPERATOR, TENANT } from "@/lib/constants";
+import { NotificationTray } from "@/components/layout/notification-tray";
 
 function subscribe(onStoreChange: () => void) {
   const id = setInterval(onStoreChange, 1000);
@@ -38,14 +39,7 @@ export function Topbar() {
         <div className="font-mono text-[12px] tabular text-qs-muted">
           {now ? `${format(now, "HH:mm:ss")} UTC` : "—"}
         </div>
-        <button
-          type="button"
-          className="relative rounded-md p-1.5 text-qs-muted hover:bg-qs-hover hover:text-qs-text"
-          aria-label="Notifications"
-        >
-          <Bell className="h-4 w-4" />
-          <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-qs-warning" />
-        </button>
+        <NotificationTray />
         <div className="flex items-center gap-1.5 rounded-full border border-qs-border bg-qs-surface px-2 py-1 text-[11px]">
           <span className="live-dot h-1.5 w-1.5 rounded-full bg-qs-accent" />
           <span className="text-qs-muted">AI</span>

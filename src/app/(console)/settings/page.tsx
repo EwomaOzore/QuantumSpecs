@@ -2,6 +2,7 @@ import { Badge, statusTone } from "@/components/ui/badge";
 import { Card, CardHeader } from "@/components/ui/card";
 import { RegionFlag } from "@/components/ui/region-flag";
 import { PROVIDERS, REGIONS, TENANT } from "@/lib/constants";
+import { formatRelative } from "@/lib/format";
 import { listNotifications, listRoutes, listTeam } from "@/lib/queries/ops";
 
 export const dynamic = "force-dynamic";
@@ -111,7 +112,7 @@ export default async function SettingsPage() {
           <CardHeader title="Recent notifications" />
           {notifications.length === 0 ? (
             <p className="px-4 py-6 text-[13px] text-qs-muted">
-              No pages yet. Execute “Notify payments team” from an investigation to write one.
+              Inbox is empty. Pages from workflows and the analyst land here.
             </p>
           ) : (
             <div className="divide-y divide-qs-border">
@@ -120,7 +121,8 @@ export default async function SettingsPage() {
                   <div className="flex items-center gap-2">
                     <span className="font-medium">{n.team}</span>
                     <Badge>{n.channel}</Badge>
-                    <Badge tone={statusTone(n.status)}>{n.status}</Badge>
+                    <Badge tone={n.readAt ? "neutral" : "accent"}>{n.readAt ? "read" : "unread"}</Badge>
+                    <span className="ml-auto text-[11px] text-qs-faint">{formatRelative(n.createdAt)}</span>
                   </div>
                   <p className="mt-1 text-[12px] text-qs-muted">{n.message}</p>
                 </div>

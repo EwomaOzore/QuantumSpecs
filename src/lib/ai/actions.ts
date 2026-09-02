@@ -7,6 +7,26 @@ export type ActionRequest = {
   actor?: string;
 };
 
+async function pushInbox(input: {
+  team: string;
+  channel: string;
+  message: string;
+  href?: string;
+  createdAt?: Date;
+}) {
+  return prisma.notification.create({
+    data: {
+      id: id("ntf"),
+      team: input.team,
+      channel: input.channel,
+      message: input.message,
+      createdAt: input.createdAt ?? new Date(),
+      status: "sent",
+      href: input.href,
+    },
+  });
+}
+
 export async function executeAction(request: ActionRequest) {
   const actor = request.actor ?? "Ewoma Ozore";
   const now = new Date();
@@ -17,10 +37,11 @@ export async function executeAction(request: ActionRequest) {
       const region = regionCode
         ? await prisma.region.findUnique({ where: { code: regionCode.toUpperCase() } })
         : null;
+      const title = String(request.args.title ?? "Untitled incident");
       const incident = await prisma.incident.create({
         data: {
           id: id("inc"),
-          title: String(request.args.title ?? "Untitled incident"),
+          title,
           severity: String(request.args.severity ?? "sev2"),
           status: "investigating",
           regionId: region?.id,
@@ -39,18 +60,20 @@ export async function executeAction(request: ActionRequest) {
           },
         },
       });
+      await pushInbox({
+        team: "payments",
+        channel: "pagerduty",
+        message: `${incident.severity.toUpperCase()} opened: ${incident.title}`,
+        href: `/incidents/${incident.id}`,
+      });
       return { ok: true, type: "incident", id: incident.id, title: incident.title };
     }
     case "send_notification": {
-      const notification = await prisma.notification.create({
-        data: {
-          id: id("ntf"),
-          team: String(request.args.team ?? "payments"),
-          channel: String(request.args.channel ?? "slack"),
-          message: String(request.args.message ?? ""),
-          createdAt: now,
-          status: "sent",
-        },
+      const notification = await pushInbox({
+        team: String(request.args.team ?? "payments"),
+        channel: String(request.args.channel ?? "slack"),
+        message: String(request.args.message ?? ""),
+        href: request.args.href ? String(request.args.href) : "/incidents",
       });
       return {
         ok: true,
@@ -87,6 +110,12 @@ export async function executeAction(request: ActionRequest) {
           sha: `rb-${current.sha}`,
         },
       });
+      await pushInbox({
+        team: "platform",
+        channel: "slack",
+        message: `${service} rolled back ${current.version} → ${rolled.version} by ${actor}`,
+        href: "/",
+      });
       return {
         ok: true,
         type: "rollback",
@@ -112,6 +141,12 @@ export async function executeAction(request: ActionRequest) {
           disabledAt: now,
           disabledReason: String(request.args.reason ?? "Disabled from QuantumSpecs agent"),
         },
+      });
+      await pushInbox({
+        team: "payments",
+        channel: "slack",
+        message: `${provider.name} ${regionCode} route disabled. ${String(request.args.reason ?? "")}`.trim(),
+        href: "/settings",
       });
       return {
         ok: true,

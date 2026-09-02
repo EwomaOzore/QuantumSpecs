@@ -1,12 +1,13 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { SuggestedAction } from "@/lib/ai/types";
 
 export function ActionBar({ actions }: { actions: SuggestedAction[] }) {
   const [done, setDone] = useState<Record<string, string>>({});
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (action: SuggestedAction) => {
       const res = await fetch("/api/agent/actions", {
@@ -21,6 +22,7 @@ export function ActionBar({ actions }: { actions: SuggestedAction[] }) {
         ...prev,
         [action.id]: data.ok ? `Done${data.id ? ` · ${data.id}` : ""}` : data.error ?? "Failed",
       }));
+      void queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
   });
 

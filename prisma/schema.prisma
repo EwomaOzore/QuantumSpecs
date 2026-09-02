@@ -149,12 +149,14 @@ model WorkflowRun {
 }
 
 model Notification {
-  id        String   @id
+  id        String    @id
   team      String
   channel   String
   message   String
   createdAt DateTime
   status    String
+  readAt    DateTime?
+  href      String?
 }
 
 model PaymentRoute {

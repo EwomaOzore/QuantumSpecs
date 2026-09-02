@@ -209,6 +209,7 @@ export function synthesize(query: string, traces: ToolTrace[]): Omit<Investigati
         team: "payments",
         channel: "pagerduty",
         message: `QuantumSpecs: checkout failures up during ${startLabel}–${endLabel} UTC. Paystack NG mobile timeouts. checkout-api 2.14.3 in the blast radius.`,
+        href: "/incidents",
       },
     });
     actions.push({

@@ -526,6 +526,58 @@ async function main() {
     },
   });
 
+  await prisma.notification.createMany({
+    data: [
+      {
+        id: id("ntf"),
+        team: "payments",
+        channel: "pagerduty",
+        message: `Checkout error-rate page fired. Paystack NG mobile timeouts ${spikeStart.toISOString().slice(11, 16)}–${spikeEnd.toISOString().slice(11, 16)} UTC.`,
+        createdAt: spikeEnd,
+        status: "sent",
+        href: `/agent?q=${encodeURIComponent("Why did checkout failures increase this morning?")}`,
+      },
+      {
+        id: id("ntf"),
+        team: "payments",
+        channel: "slack",
+        message: "Paystack NG p95 crossed 2s. Failover workflow suggested disabling the route.",
+        createdAt: new Date(spikeStart.getTime() + 8 * 60 * 1000),
+        status: "sent",
+        href: "/settings",
+      },
+      {
+        id: id("ntf"),
+        team: "risk",
+        channel: "slack",
+        message: "Shadowlane Imports velocity rule fired. KYC moved to review.",
+        createdAt: new Date(now.getTime() - 6 * 3600 * 1000),
+        status: "sent",
+        href: "/customers",
+      },
+      {
+        id: id("ntf"),
+        team: "regional-ke",
+        channel: "slack",
+        message: "M-Pesa payout delays in Kenya — incident resolved.",
+        createdAt: new Date(now.getTime() - 44 * 3600 * 1000),
+        status: "sent",
+        readAt: new Date(now.getTime() - 43 * 3600 * 1000),
+        href: `/incidents/${mpesaIncidentId}`,
+      },
+      {
+        id: id("ntf"),
+        team: "compliance",
+        channel: "email",
+        message: "GBP/NGN spread cap applied after quote drift at London open.",
+        createdAt: new Date(now.getTime() - 10.4 * 3600 * 1000),
+        status: "sent",
+        readAt: new Date(now.getTime() - 9 * 3600 * 1000),
+        href: `/incidents/${fxIncidentId}`,
+      },
+    ],
+  });
+
   await prisma.workflow.createMany({
     data: [
       {
