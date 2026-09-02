@@ -16,6 +16,8 @@ export function LoginForm() {
 
   return (
     <form
+      method="post"
+      action="/login"
       className="rounded-lg border border-qs-border bg-qs-surface p-5"
       onSubmit={async (e) => {
         e.preventDefault();
