@@ -14,7 +14,12 @@ export async function POST(request: Request) {
   const limited = rateLimit(clientKey(request, "agent", session.user.id), 20, 10 * 60 * 1000);
   if (!limited.ok) return rateLimitResponse(limited);
 
-  const body = (await request.json()) as { query?: string };
+  let body: { query?: string } = {};
+  try {
+    body = (await request.json()) as { query?: string };
+  } catch {
+    return NextResponse.json({ error: "query required" }, { status: 400 });
+  }
   const query = body.query?.trim();
   if (!query) {
     return NextResponse.json({ error: "query required" }, { status: 400 });
