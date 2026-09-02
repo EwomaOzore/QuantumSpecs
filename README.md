@@ -7,11 +7,27 @@ The console tracks checkout health, incidents, merchants, and deployments. The o
 ## Stack
 
 - Next.js App Router, TypeScript, Tailwind
-- Prisma + SQLite (Postgres via Docker Compose)
+- Prisma + Postgres (Docker locally, Neon on Vercel)
 - TanStack Query, Recharts
 - Optional OpenAI via the Vercel AI SDK
 
 ## Setup
+
+Postgres must be running. From the repo root:
+
+```bash
+docker compose up -d
+```
+
+In `.env`:
+
+```
+DATABASE_URL="postgresql://quantumspecs:quantumspecs@localhost:5432/quantumspecs"
+OPENAI_API_KEY=
+AI_MODEL="gpt-4o"
+```
+
+Then:
 
 ```bash
 npm install
@@ -22,29 +38,35 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). `⌘K` / `Ctrl+K` opens the analyst.
 
-Optional LLM in `.env`:
+## Deploy to Vercel
 
-```
-OPENAI_API_KEY=sk-...
-AI_MODEL=gpt-4o
-```
+Do not use `file:./dev.db` on Vercel. The serverless filesystem cannot keep SQLite.
 
-Without a key, the local analyst still calls the same tools against the database.
+1. Create a free Postgres database on [Neon](https://console.neon.tech) (GitHub login works).
+2. Copy the connection URI (`postgresql://...?sslmode=require`). Use the **direct / non-pooled** string.
+3. In the Vercel import screen, set:
 
-Postgres and Redis:
+   | Key | Value |
+   | --- | --- |
+   | `DATABASE_URL` | the Neon URI |
+   | `OPENAI_API_KEY` | `sk-...` |
+   | `AI_MODEL` | `gpt-4o` |
+   | `NEXT_PUBLIC_TENANT_NAME` | `Kora` |
+   | `NEXT_PUBLIC_OPERATOR_NAME` | `Ewoma` |
+
+4. Push this repo, then Deploy. Build runs `prisma db push` so tables exist.
+5. Seed production once from your laptop (this wipes that database and loads Kora):
 
 ```bash
-docker compose up -d
+DATABASE_URL="postgresql://...neon.tech/neondb?sslmode=require" npm run db:seed
 ```
-
-Point `DATABASE_URL` at Postgres and switch the Prisma provider if you want that stack.
 
 ## Scripts
 
 | Script | |
 | --- | --- |
 | `npm run dev` | Dev server |
-| `npm run db:reset` | Recreate SQLite and seed Kora |
+| `npm run db:reset` | Recreate Postgres schema and seed Kora |
 | `npm test` | Unit tests |
 | `npm run test:e2e` | Playwright |
 | `npm run build` | Production build |
