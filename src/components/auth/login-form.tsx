@@ -37,8 +37,7 @@ export function LoginForm() {
         window.location.href = callbackUrl;
       }}
     >
-      <div className="text-[15px] font-medium">Sign in</div>
-      <p className="mt-1 text-[13px] text-qs-muted">Use a Kora team email and the console password.</p>
+      <p className="text-[13px] text-qs-muted">Use a Kora team email and the console password.</p>
       <label htmlFor="email" className="mt-4 block text-[11px] uppercase tracking-[0.14em] text-qs-faint">Email</label>
       <Input
         id="email"

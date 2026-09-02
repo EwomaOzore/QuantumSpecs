@@ -14,7 +14,15 @@ export const authConfig = {
       if (
         pathname.startsWith("/login") ||
         pathname.startsWith("/api/auth") ||
-        pathname.startsWith("/api/cron")
+        pathname.startsWith("/api/cron") ||
+        pathname === "/sitemap.xml" ||
+        pathname === "/robots.txt" ||
+        pathname === "/llms.txt" ||
+        pathname === "/favicon.ico" ||
+        pathname.startsWith("/icon") ||
+        pathname.startsWith("/apple-icon") ||
+        pathname.startsWith("/opengraph-image") ||
+        pathname.startsWith("/twitter-image")
       ) {
         return true;
       }

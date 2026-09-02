@@ -24,7 +24,7 @@ export function GlobeView() {
   const siteCount = getOpsSites().filter((s) => s.citySlug === hub.slug).length;
 
   return (
-    <div className="flex h-[calc(100dvh-3rem)] min-h-0">
+    <div className="flex h-full min-h-0">
       <div className="relative min-h-0 min-w-0 flex-1">
         <div className="pointer-events-none absolute left-4 top-4 z-20">
           <div className="rounded-md border border-qs-border bg-qs-bg/80 px-3 py-2 backdrop-blur">

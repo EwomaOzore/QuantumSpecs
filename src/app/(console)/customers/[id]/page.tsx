@@ -1,12 +1,29 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PageSource } from "@/components/seo/page-source";
 import { Badge, statusTone } from "@/components/ui/badge";
 import { Card, CardHeader } from "@/components/ui/card";
 import { RegionFlag } from "@/components/ui/region-flag";
 import { formatMoney, formatRelative, formatUsd } from "@/lib/format";
 import { getCustomer } from "@/lib/queries/customers";
+import { pageMetadata } from "@/lib/site";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const data = await getCustomer(id);
+  if (!data) return pageMetadata("/customers", { title: "Merchant not found" });
+  return pageMetadata("/customers", {
+    title: data.customer.name,
+    description: `${data.customer.company} · ${data.customer.region.name} · ${data.customer.email}`,
+    path: `/customers/${id}`,
+  });
+}
 
 export default async function CustomerPage({
   params,
@@ -20,10 +37,8 @@ export default async function CustomerPage({
 
   return (
     <div className="px-6 py-5">
-      <Link href="/customers" className="text-[12px] text-qs-muted hover:text-qs-text">
-        ← Customers
-      </Link>
-      <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
+      <PageSource path="/customers" extra={{ label: customer.name }} className="mb-3 px-0 pt-0" />
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-[20px] font-medium">{customer.name}</h1>
           <p className="mt-1 text-[13px] text-qs-muted">

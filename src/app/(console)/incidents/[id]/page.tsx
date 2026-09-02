@@ -1,11 +1,28 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PageSource } from "@/components/seo/page-source";
 import { Badge, severityTone, statusTone } from "@/components/ui/badge";
 import { Card, CardHeader } from "@/components/ui/card";
 import { formatStamp } from "@/lib/format";
 import { getIncident } from "@/lib/queries/ops";
+import { pageMetadata } from "@/lib/site";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const incident = await getIncident(id);
+  if (!incident) return pageMetadata("/incidents", { title: "Incident not found" });
+  return pageMetadata("/incidents", {
+    title: incident.title,
+    description: incident.summary.slice(0, 160),
+    path: `/incidents/${id}`,
+  });
+}
 
 export default async function IncidentDetailPage({
   params,
@@ -18,10 +35,8 @@ export default async function IncidentDetailPage({
 
   return (
     <div className="px-6 py-5">
-      <Link href="/incidents" className="text-[12px] text-qs-muted hover:text-qs-text">
-        ← Incidents
-      </Link>
-      <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
+      <PageSource path="/incidents" extra={{ label: incident.title }} className="mb-3 px-0 pt-0" />
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-[20px] font-medium">{incident.title}</h1>
           <p className="mt-1 max-w-2xl text-[13px] text-qs-muted">{incident.summary}</p>

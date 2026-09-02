@@ -1,11 +1,14 @@
+import { PageSource } from "@/components/seo/page-source";
 import { Badge, statusTone } from "@/components/ui/badge";
 import { Card, CardHeader } from "@/components/ui/card";
 import { RegionFlag } from "@/components/ui/region-flag";
 import { PROVIDERS, REGIONS, TENANT } from "@/lib/constants";
 import { formatRelative } from "@/lib/format";
 import { listNotifications, listRoutes, listTeam } from "@/lib/queries/ops";
+import { pageMetadata } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
+export const metadata = pageMetadata("/settings");
 
 export default async function SettingsPage() {
   const [team, routes, notifications] = await Promise.all([
@@ -16,6 +19,7 @@ export default async function SettingsPage() {
 
   return (
     <div className="px-6 py-5">
+      <PageSource path="/settings" className="mb-3 px-0 pt-0" />
       <h1 className="text-[18px] font-medium">Settings</h1>
       <p className="mt-1 text-[13px] text-qs-muted">
         {TENANT.legalName} · production

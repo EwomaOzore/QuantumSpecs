@@ -1,15 +1,19 @@
 import Link from "next/link";
+import { PageSource } from "@/components/seo/page-source";
 import { Card } from "@/components/ui/card";
 import { formatRelative } from "@/lib/format";
 import { listAgentRuns } from "@/lib/queries/ops";
+import { pageMetadata } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
+export const metadata = pageMetadata("/agent/runs");
 
 export default async function AgentRunsPage() {
   const runs = await listAgentRuns(40);
 
   return (
     <div className="px-6 py-5">
+      <PageSource path="/agent/runs" className="mb-3 px-0 pt-0" />
       <div className="flex items-end justify-between gap-3">
         <div>
           <h1 className="text-[18px] font-medium">Past investigations</h1>
