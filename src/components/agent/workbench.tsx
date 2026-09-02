@@ -13,10 +13,21 @@ const STARTERS = [
   "Summarize open incidents",
 ];
 
+const TOOL_STATUS: Record<string, string> = {
+  get_transaction_metrics: "Checking checkout volume and failures…",
+  get_customer: "Looking up the merchant…",
+  search_customers: "Searching merchants…",
+  search_incidents: "Searching incidents…",
+  get_incident: "Opening the incident…",
+  get_deployment: "Checking recent deploys…",
+  query_logs: "Reading error logs…",
+  compare_regions: "Comparing regions…",
+  get_provider_health: "Checking payment providers…",
+};
+
 export function AgentWorkbench({ initialQuery }: { initialQuery?: string }) {
   const [query, setQuery] = useState(initialQuery ?? "");
   const [status, setStatus] = useState<string | null>(null);
-  const [tools, setTools] = useState<string[]>([]);
   const [investigation, setInvestigation] = useState<Investigation | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
@@ -28,8 +39,7 @@ export function AgentWorkbench({ initialQuery }: { initialQuery?: string }) {
     setRunning(true);
     setError(null);
     setInvestigation(null);
-    setTools([]);
-    setStatus("Connecting to operations analyst…");
+    setStatus("Starting investigation…");
     const res = await fetch("/api/agent/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -56,8 +66,7 @@ export function AgentWorkbench({ initialQuery }: { initialQuery?: string }) {
           const event = JSON.parse(line) as AgentEvent;
           if (event.type === "status") setStatus(event.message);
           if (event.type === "tool_start") {
-            setTools((prev) => [...prev, event.name]);
-            setStatus(`Calling ${event.name}`);
+            setStatus(TOOL_STATUS[event.name] ?? "Checking related data…");
           }
           if (event.type === "result") setInvestigation(event.investigation);
           if (event.type === "error") setError(event.message);
@@ -112,14 +121,7 @@ export function AgentWorkbench({ initialQuery }: { initialQuery?: string }) {
           </button>
         ))}
       </div>
-      {status ? (
-        <div className="mt-6 text-[13px] text-qs-accent">
-          {status}
-          {tools.length ? (
-            <span className="ml-2 text-qs-faint">{tools.join(" → ")}</span>
-          ) : null}
-        </div>
-      ) : null}
+      {status ? <div className="mt-6 text-[13px] text-qs-accent">{status}</div> : null}
       {error ? <div className="mt-6 text-[13px] text-qs-danger">{error}</div> : null}
       {investigation ? (
         <div className="mt-6 rounded-lg border border-qs-border bg-qs-surface p-5">

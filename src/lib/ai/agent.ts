@@ -36,7 +36,7 @@ export async function runAgent(query: string, onEvent?: (event: AgentEvent) => v
     } catch (err) {
       onEvent?.({
         type: "status",
-        message: `LLM unavailable (${err instanceof Error ? err.message : "error"}). Falling back to local analyst.`,
+        message: "Couldn't reach the language model. Using the built-in analyst.",
       });
     }
   }

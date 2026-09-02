@@ -260,7 +260,7 @@ export async function runLocalInvestigation(
   onEvent?: (event: AgentEvent) => void,
 ): Promise<Investigation> {
   const started = Date.now();
-  onEvent?.({ type: "status", message: "Planning tool calls against Kora telemetry…" });
+  onEvent?.({ type: "status", message: "Checking live checkout and provider data…" });
   const plan = planTools(query);
   const traces: ToolTrace[] = [];
 
@@ -286,7 +286,7 @@ export async function runLocalInvestigation(
     }
   }
 
-  onEvent?.({ type: "status", message: "Synthesizing evidence from tool results…" });
+  onEvent?.({ type: "status", message: "Putting the evidence together…" });
   const synthesized = synthesize(query, traces);
   const investigation: Investigation = {
     ...synthesized,

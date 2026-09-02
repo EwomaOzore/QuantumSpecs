@@ -15,7 +15,7 @@ If the user asks why checkout failed this morning, investigate Paystack NG + che
 export async function runLlmAgent(query: string, onEvent?: (event: AgentEvent) => void): Promise<Investigation> {
   const started = Date.now();
   const modelId = process.env.AI_MODEL || "gpt-4o";
-  onEvent?.({ type: "status", message: `Routing through ${modelId} with Kora tools…` });
+  onEvent?.({ type: "status", message: "Checking live checkout and provider data…" });
 
   const traces: ToolTrace[] = [];
 
