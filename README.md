@@ -10,6 +10,7 @@ The console tracks checkout health, incidents, merchants, and deployments. The o
 - Prisma + Postgres (Docker locally, Neon on Vercel)
 - TanStack Query, Recharts
 - Optional OpenAI via the Vercel AI SDK
+- Auth.js credentials login
 
 ## Setup
 
@@ -19,12 +20,15 @@ Postgres must be running. From the repo root:
 docker compose up -d
 ```
 
-In `.env`:
+Copy `.env.example` to `.env` and set:
 
 ```
 DATABASE_URL="postgresql://quantumspecs:quantumspecs@localhost:5432/quantumspecs"
+DIRECT_URL="postgresql://quantumspecs:quantumspecs@localhost:5432/quantumspecs"
 OPENAI_API_KEY=
 AI_MODEL="gpt-4o"
+AUTH_SECRET="dev-quantumspecs-auth-secret"
+CONSOLE_PASSWORD="kora-ops"
 ```
 
 Then:
@@ -32,34 +36,41 @@ Then:
 ```bash
 npm install
 npx prisma generate
-npm run db:reset
+npx prisma migrate deploy
+npm run db:seed
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). `⌘K` / `Ctrl+K` opens the analyst.
+Open [http://localhost:3000](http://localhost:3000). Sign in as `ewoma@kora.pay` with `kora-ops`. `⌘K` / `Ctrl+K` opens the analyst.
 
 ## Deploy to Vercel
 
 Do not use `file:./dev.db` on Vercel. The serverless filesystem cannot keep SQLite.
 
 1. Create a free Postgres database on [Neon](https://console.neon.tech) (GitHub login works).
-2. Copy the connection URI (`postgresql://...?sslmode=require`). Use the **direct / non-pooled** string.
-3. In the Vercel import screen, set:
+2. Copy the connection URI (`postgresql://...?sslmode=require`). Use the pooled host for `DATABASE_URL` and the non-pooled host for `DIRECT_URL`.
+3. In Vercel, set:
 
    | Key | Value |
    | --- | --- |
-   | `DATABASE_URL` | the Neon URI |
+   | `DATABASE_URL` | Neon pooled URI + `?sslmode=require` |
+   | `DIRECT_URL` | Neon direct URI + `?sslmode=require` |
    | `OPENAI_API_KEY` | `sk-...` |
    | `AI_MODEL` | `gpt-4o` |
+   | `AUTH_SECRET` | `openssl rand -base64 32` |
+   | `CONSOLE_PASSWORD` | a password only you know |
+   | `CRON_SECRET` | optional; Vercel Cron sends it as `Bearer` |
    | `NEXT_PUBLIC_TENANT_NAME` | `Kora` |
    | `NEXT_PUBLIC_OPERATOR_NAME` | `Ewoma` |
 
-4. Push this repo, then Deploy. Build runs `prisma db push` so tables exist.
+4. Push this repo, then Deploy. Build runs `prisma migrate deploy`.
 5. Seed production once from your laptop (this wipes that database and loads Kora):
 
 ```bash
-DATABASE_URL="postgresql://...neon.tech/neondb?sslmode=require" npm run db:seed
+DATABASE_URL="postgresql://...neon.tech/neondb?sslmode=require" DIRECT_URL="$DATABASE_URL" npm run db:seed
 ```
+
+Sign in on the live site with a seeded team email (`ewoma@kora.pay`) and `CONSOLE_PASSWORD`.
 
 ## Scripts
 
@@ -73,7 +84,7 @@ DATABASE_URL="postgresql://...neon.tech/neondb?sslmode=require" npm run db:seed
 
 ## Seeded scenario
 
-Each reset plants a checkout regression a few hours behind the current time: `checkout-api@2.14.3`, Paystack NG latency, mobile timeouts. Overview surfaces it; the analyst can investigate it.
+Each reset plants a checkout regression a few hours behind the current time: `checkout-api@2.14.3`, Paystack NG latency, mobile timeouts. Overview surfaces it; the analyst can investigate it. Opening Overview also writes a small batch of live checkouts if traffic has gone stale. **Simulate traffic** does the same on demand. An hourly cron (`/api/cron/tick`) ingests more volume and auto-runs notify/page steps when a playbook trigger matches.
 
 ## Tools
 

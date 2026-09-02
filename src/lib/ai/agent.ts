@@ -19,6 +19,7 @@ export async function persistRun(query: string, investigation: Investigation) {
           ok: t.ok,
         })),
       ),
+      confidence: investigation.confidence,
       latencyMs: investigation.latencyMs,
       promptTokens: investigation.promptTokens,
       completionTokens: investigation.completionTokens,

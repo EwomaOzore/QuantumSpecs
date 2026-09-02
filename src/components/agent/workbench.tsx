@@ -45,6 +45,16 @@ export function AgentWorkbench({ initialQuery }: { initialQuery?: string }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query: text }),
     });
+    if (res.status === 401) {
+      setError("Sign in required");
+      setRunning(false);
+      return;
+    }
+    if (res.status === 429) {
+      setError("Too many investigations — wait a minute and retry.");
+      setRunning(false);
+      return;
+    }
     if (!res.body) {
       setError("No stream from agent");
       setRunning(false);
