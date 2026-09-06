@@ -37,6 +37,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const expected =
           process.env.CONSOLE_PASSWORD ?? (process.env.NODE_ENV === "production" ? "" : "kora-ops");
         if (!email || !password || !expected) return null;
+        if (!email.endsWith("@kora.pay")) return null;
         if (!passwordsMatch(password, expected)) return null;
 
         try {

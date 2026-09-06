@@ -17,7 +17,7 @@ export async function runEvalSuite() {
     cases.push(await scoreCase(testCase));
   }
   const averageScore = cases.reduce((s, c) => s + c.score, 0) / cases.length;
-  const model = cases[0]?.model ?? (process.env.AI_MODEL || "gpt-4o");
+  const model = cases[0]?.model ?? "local-analyst";
   return {
     agentName: "Operations Analyst",
     model,

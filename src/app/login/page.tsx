@@ -4,6 +4,7 @@ import { Mark } from "@/components/ui/mark";
 import { LoginForm } from "@/components/auth/login-form";
 import { JsonLd } from "@/components/seo/json-ld";
 import { auth } from "@/auth";
+import { OPERATOR } from "@/lib/constants";
 import { redirect } from "next/navigation";
 import { breadcrumbJsonLd, pageMetadata } from "@/lib/site";
 
@@ -27,7 +28,10 @@ export default async function LoginPage() {
         <h1 className="text-[22px] font-medium tracking-tight">Sign in to QuantumSpecs</h1>
         <p className="mt-1 mb-4 text-[13px] text-qs-muted">Kora production operations console.</p>
         <Suspense>
-          <LoginForm />
+          <LoginForm
+            email={OPERATOR.email}
+            password={process.env.CONSOLE_PASSWORD ?? "kora-ops"}
+          />
         </Suspense>
       </div>
     </div>

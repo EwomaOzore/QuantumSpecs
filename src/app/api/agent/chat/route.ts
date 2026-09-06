@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { persistRun, runAgent } from "@/lib/ai/agent";
+import { MAX_AGENT_QUERY_CHARS } from "@/lib/ai/policy";
 import type { AgentEvent } from "@/lib/ai/types";
 import { requireUser } from "@/lib/auth-guard";
 import { clientKey, rateLimit, rateLimitResponse } from "@/lib/rate-limit";
@@ -11,7 +12,7 @@ export async function POST(request: Request) {
   const { session, error } = await requireUser();
   if (error) return error;
 
-  const limited = rateLimit(clientKey(request, "agent", session.user.id), 20, 10 * 60 * 1000);
+  const limited = rateLimit(clientKey(request, "agent", session.user.id), 12, 15 * 60 * 1000);
   if (!limited.ok) return rateLimitResponse(limited);
 
   let body: { query?: string } = {};
@@ -23,6 +24,9 @@ export async function POST(request: Request) {
   const query = body.query?.trim();
   if (!query) {
     return NextResponse.json({ error: "query required" }, { status: 400 });
+  }
+  if (query.length > MAX_AGENT_QUERY_CHARS) {
+    return NextResponse.json({ error: "query too long" }, { status: 400 });
   }
 
   const encoder = new TextEncoder();

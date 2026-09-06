@@ -29,12 +29,12 @@ export async function persistRun(query: string, investigation: Investigation) {
 }
 
 export async function runAgent(query: string, onEvent?: (event: AgentEvent) => void) {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (apiKey) {
+  const { paidAiEnabled } = await import("@/lib/ai/policy");
+  if (paidAiEnabled()) {
     try {
       const { runLlmAgent } = await import("@/lib/ai/llm-agent");
       return await runLlmAgent(query, onEvent);
-    } catch (err) {
+    } catch {
       onEvent?.({
         type: "status",
         message: "Couldn't reach the language model. Using the built-in analyst.",

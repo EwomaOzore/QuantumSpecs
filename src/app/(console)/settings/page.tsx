@@ -5,6 +5,7 @@ import { RegionFlag } from "@/components/ui/region-flag";
 import { PROVIDERS, REGIONS, TENANT } from "@/lib/constants";
 import { formatRelative } from "@/lib/format";
 import { listNotifications, listRoutes, listTeam } from "@/lib/queries/ops";
+import { analystModelLabel, paidAiEnabled } from "@/lib/ai/policy";
 import { pageMetadata } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
@@ -39,11 +40,11 @@ export default async function SettingsPage() {
             </div>
             <div>
               <dt className="text-qs-faint">AI model</dt>
-              <dd className="font-mono">{process.env.AI_MODEL ?? "gpt-4o"}</dd>
+              <dd className="font-mono">{analystModelLabel()}</dd>
             </div>
             <div>
-              <dt className="text-qs-faint">LLM key</dt>
-              <dd>{process.env.OPENAI_API_KEY ? "configured" : "local analyst fallback"}</dd>
+              <dt className="text-qs-faint">Paid LLM</dt>
+              <dd>{paidAiEnabled() ? "opted in" : "off · no billing"}</dd>
             </div>
           </dl>
         </Card>
