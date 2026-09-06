@@ -1,11 +1,29 @@
 import type { NextAuthConfig } from "next-auth";
 
+const useSecureCookies = process.env.NODE_ENV === "production";
+
 export const authConfig = {
   trustHost: true,
   secret:
     process.env.AUTH_SECRET ??
     (process.env.NODE_ENV === "production" ? undefined : "dev-quantumspecs-auth-secret"),
-  session: { strategy: "jwt", maxAge: 60 * 60 * 12 },
+  session: {
+    strategy: "jwt",
+    maxAge: 8 * 60 * 60,
+    updateAge: 30 * 60,
+  },
+  useSecureCookies,
+  cookies: {
+    sessionToken: {
+      name: useSecureCookies ? "__Secure-authjs.session-token" : "authjs.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: useSecureCookies,
+      },
+    },
+  },
   pages: { signIn: "/login" },
   providers: [],
   callbacks: {
@@ -32,6 +50,7 @@ export const authConfig = {
       if (user) {
         token.id = user.id;
         token.role = (user as { role?: string }).role;
+        token.jti = crypto.randomUUID();
       }
       return token;
     },

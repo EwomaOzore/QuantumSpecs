@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   const { session, error } = await requireUser();
   if (error) return error;
 
-  const limited = rateLimit(clientKey(request, "eval", session.user.id), 20, 15 * 60 * 1000);
+  const limited = rateLimit(clientKey(request, "eval", session.user.id), 8, 15 * 60 * 1000);
   if (!limited.ok) return rateLimitResponse(limited);
 
   const body = (await request.json()) as { caseId?: string };

@@ -6,11 +6,17 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export function LoginForm() {
+export function LoginForm({
+  email: initialEmail,
+  password: initialPassword,
+}: {
+  email: string;
+  password: string;
+}) {
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") || "/";
-  const [email, setEmail] = useState("ewoma@kora.pay");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(initialEmail);
+  const [password, setPassword] = useState(initialPassword);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -30,14 +36,28 @@ export function LoginForm() {
           callbackUrl,
         });
         setPending(false);
+        if (result?.status === 429) {
+          setError("Too many sign-in attempts. Wait a few minutes and try again.");
+          return;
+        }
         if (result?.error) {
-          setError("Could not sign in. Use kora-ops locally, or the CONSOLE_PASSWORD set for this environment.");
+          setError("Could not sign in. Check the desk email and password.");
           return;
         }
         window.location.href = callbackUrl;
       }}
     >
-      <p className="text-[13px] text-qs-muted">Use a Kora team email and the console password.</p>
+      <p className="text-[13px] text-qs-muted">Demo desk credentials are filled in. Continue to open Command.</p>
+      <div className="mt-3 rounded-md border border-qs-border bg-qs-bg px-3 py-2 font-mono text-[12px]">
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-qs-faint">Email</span>
+          <span className="text-qs-text">{initialEmail}</span>
+        </div>
+        <div className="mt-1 flex items-center justify-between gap-3">
+          <span className="text-qs-faint">Password</span>
+          <span className="text-qs-text">{initialPassword}</span>
+        </div>
+      </div>
       <label htmlFor="email" className="mt-4 block text-[11px] uppercase tracking-[0.14em] text-qs-faint">Email</label>
       <Input
         id="email"

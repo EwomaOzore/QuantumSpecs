@@ -120,7 +120,7 @@ export function EvaluationClient() {
         <div>
           <h1 className="text-[18px] font-medium">AI evaluation</h1>
           <p className="mt-1 text-[13px] text-qs-muted">
-            Scores the live analyst — gpt-4o when a key is set, otherwise the built-in planner — on tool choice, evidence, latency, and tokens.
+            Scores the built-in local analyst on tool choice, evidence, and latency. Paid models stay off.
           </p>
         </div>
         <Button variant="primary" onClick={() => void runSuite()} disabled={running}>
@@ -213,7 +213,7 @@ export function EvaluationClient() {
         <Card className="px-4 py-3">
           <div className="text-[13px] font-medium">Live model</div>
           <p className="mt-1 text-[12px] leading-5 text-qs-muted">
-            The suite calls the same agent as the console. gpt-4o is scored when OPENAI_API_KEY is set.
+            The suite calls the same local analyst as the console. OpenAI is not contacted, so there is no model bill.
           </p>
         </Card>
       </div>
