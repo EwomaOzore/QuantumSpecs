@@ -19,7 +19,7 @@ export default async function SettingsPage() {
   ]);
 
   return (
-    <div className="px-6 py-5">
+    <div className="px-4 py-4 sm:px-6 sm:py-5">
       <PageSource path="/settings" className="mb-3 px-0 pt-0" />
       <h1 className="text-[18px] font-medium">Settings</h1>
       <p className="mt-1 text-[13px] text-qs-muted">
@@ -52,7 +52,10 @@ export default async function SettingsPage() {
           <CardHeader title="Regions" />
           <div className="divide-y divide-qs-border">
             {REGIONS.map((r) => (
-              <div key={r.code} className="flex items-center justify-between px-4 py-2 text-[13px]">
+              <div
+                key={r.code}
+                className="flex items-center justify-between px-4 py-2 text-[13px]"
+              >
                 <span>
                   <RegionFlag code={r.code} /> {r.name}
                 </span>
@@ -66,34 +69,47 @@ export default async function SettingsPage() {
       </div>
 
       <Card className="mt-4">
-        <CardHeader title="Payment routes" description="Disable from the analyst when a provider is burning" />
-        <table className="w-full text-left text-[13px]">
-          <thead className="text-[11px] uppercase tracking-wide text-qs-faint">
-            <tr>
-              <th className="px-4 py-2 font-medium">Provider</th>
-              <th className="px-4 py-2 font-medium">Region</th>
-              <th className="px-4 py-2 font-medium">Type</th>
-              <th className="px-4 py-2 font-medium">Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-qs-border">
-            {routes.map((r) => (
-              <tr key={r.id}>
-                <td className="px-4 py-2">{r.provider?.name ?? r.providerId}</td>
-                <td className="px-4 py-2">
-                  <RegionFlag code={r.regionCode} /> {r.regionCode}
-                </td>
-                <td className="px-4 py-2 capitalize text-qs-muted">{r.provider?.type}</td>
-                <td className="px-4 py-2">
-                  <Badge tone={r.enabled ? "success" : "danger"}>{r.enabled ? "enabled" : "disabled"}</Badge>
-                  {r.disabledReason ? (
-                    <span className="ml-2 text-[11px] text-qs-faint">{r.disabledReason}</span>
-                  ) : null}
-                </td>
+        <CardHeader
+          title="Payment routes"
+          description="Disable from the analyst when a provider is burning"
+        />
+        <div className="overflow-x-auto qs-scroll">
+          <table className="w-full min-w-[560px] text-left text-[13px]">
+            <thead className="text-[11px] uppercase tracking-wide text-qs-faint">
+              <tr>
+                <th className="px-4 py-2 font-medium">Provider</th>
+                <th className="px-4 py-2 font-medium">Region</th>
+                <th className="px-4 py-2 font-medium">Type</th>
+                <th className="px-4 py-2 font-medium">Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-qs-border">
+              {routes.map((r) => (
+                <tr key={r.id}>
+                  <td className="px-4 py-2">
+                    {r.provider?.name ?? r.providerId}
+                  </td>
+                  <td className="px-4 py-2">
+                    <RegionFlag code={r.regionCode} /> {r.regionCode}
+                  </td>
+                  <td className="px-4 py-2 capitalize text-qs-muted">
+                    {r.provider?.type}
+                  </td>
+                  <td className="px-4 py-2">
+                    <Badge tone={r.enabled ? "success" : "danger"}>
+                      {r.enabled ? "enabled" : "disabled"}
+                    </Badge>
+                    {r.disabledReason ? (
+                      <span className="ml-2 text-[11px] text-qs-faint">
+                        {r.disabledReason}
+                      </span>
+                    ) : null}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </Card>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
@@ -101,7 +117,10 @@ export default async function SettingsPage() {
           <CardHeader title="Team" />
           <div className="divide-y divide-qs-border">
             {team.map((m) => (
-              <div key={m.id} className="flex items-center justify-between px-4 py-2.5 text-[13px]">
+              <div
+                key={m.id}
+                className="flex items-center justify-between px-4 py-2.5 text-[13px]"
+              >
                 <div>
                   <div>{m.name}</div>
                   <div className="text-[11px] text-qs-faint">
@@ -126,8 +145,12 @@ export default async function SettingsPage() {
                   <div className="flex items-center gap-2">
                     <span className="font-medium">{n.team}</span>
                     <Badge>{n.channel}</Badge>
-                    <Badge tone={n.readAt ? "neutral" : "accent"}>{n.readAt ? "read" : "unread"}</Badge>
-                    <span className="ml-auto text-[11px] text-qs-faint">{formatRelative(n.createdAt)}</span>
+                    <Badge tone={n.readAt ? "neutral" : "accent"}>
+                      {n.readAt ? "read" : "unread"}
+                    </Badge>
+                    <span className="ml-auto text-[11px] text-qs-faint">
+                      {formatRelative(n.createdAt)}
+                    </span>
                   </div>
                   <p className="mt-1 text-[12px] text-qs-muted">{n.message}</p>
                 </div>
@@ -138,12 +161,25 @@ export default async function SettingsPage() {
       </div>
 
       <Card className="mt-4">
-        <CardHeader title="Integrations" description="Payment providers and paging for this workspace" />
+        <CardHeader
+          title="Integrations"
+          description="Payment providers and paging for this workspace"
+        />
         <div className="grid gap-2 px-4 py-3 sm:grid-cols-3">
-          {[...PROVIDERS.map((p) => p.name), "Slack", "PagerDuty", "Linear"].map((name) => (
-            <div key={name} className="rounded-md border border-qs-border px-3 py-2 text-[13px]">
+          {[
+            ...PROVIDERS.map((p) => p.name),
+            "Slack",
+            "PagerDuty",
+            "Linear",
+          ].map((name) => (
+            <div
+              key={name}
+              className="rounded-md border border-qs-border px-3 py-2 text-[13px]"
+            >
               {name}
-              <div className="text-[11px] text-qs-faint">connected · sandbox</div>
+              <div className="text-[11px] text-qs-faint">
+                connected · sandbox
+              </div>
             </div>
           ))}
         </div>

@@ -34,7 +34,7 @@ export default async function IncidentDetailPage({
   if (!incident) notFound();
 
   return (
-    <div className="px-6 py-5">
+    <div className="px-4 py-4 sm:px-6 sm:py-5">
       <PageSource path="/incidents" extra={{ label: incident.title }} className="mb-3 px-0 pt-0" />
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
@@ -65,7 +65,7 @@ export default async function IncidentDetailPage({
         <div className="px-4 py-3">
           <ol className="space-y-4">
             {incident.events.map((event) => (
-              <li key={event.id} className="grid grid-cols-[140px_1fr] gap-4">
+              <li key={event.id} className="grid grid-cols-1 gap-1 sm:grid-cols-[140px_1fr] sm:gap-4">
                 <div className="font-mono text-[11px] text-qs-faint">{formatStamp(event.at)}</div>
                 <div>
                   <div className="text-[12px] text-qs-muted">

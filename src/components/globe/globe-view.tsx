@@ -24,9 +24,9 @@ export function GlobeView() {
   const siteCount = getOpsSites().filter((s) => s.citySlug === hub.slug).length;
 
   return (
-    <div className="flex h-full min-h-0">
-      <div className="relative min-h-0 min-w-0 flex-1">
-        <div className="pointer-events-none absolute left-4 top-4 z-20">
+    <div className="flex min-h-0 flex-col lg:h-full lg:flex-row">
+      <div className="relative h-[min(62vh,520px)] min-w-0 lg:h-auto lg:min-h-0 lg:flex-1">
+        <div className="pointer-events-none absolute left-3 top-3 z-20 sm:left-4 sm:top-4">
           <div className="rounded-md border border-qs-border bg-qs-bg/80 px-3 py-2 backdrop-blur">
             <h1 className="text-[18px] font-medium tracking-tight">{hub.name}</h1>
             <p className="text-[12px] text-qs-muted">
@@ -37,7 +37,7 @@ export function GlobeView() {
         </div>
         <OpsGlobeCanvas hub={hub} onSelectHub={selectHub} />
       </div>
-      <aside className="flex w-[280px] shrink-0 flex-col overflow-auto border-l border-qs-border bg-qs-bg-2 sm:w-[320px]">
+      <aside className="flex w-full shrink-0 flex-col border-t border-qs-border bg-qs-bg-2 lg:h-full lg:w-[320px] lg:overflow-auto lg:border-l lg:border-t-0">
         <div className="px-4 py-4">
           <div className="text-[11px] uppercase tracking-[0.14em] text-qs-faint">Selected hub</div>
           <h2 className="mt-1 text-[18px] font-medium">{hub.name}</h2>

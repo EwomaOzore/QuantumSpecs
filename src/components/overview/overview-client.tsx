@@ -91,7 +91,7 @@ export function OverviewClient({ data }: { data: Overview }) {
   }
 
   return (
-    <div className="px-6 py-5">
+    <div className="px-4 py-4 sm:px-6 sm:py-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-[22px] font-medium tracking-tight">
@@ -102,7 +102,7 @@ export function OverviewClient({ data }: { data: Overview }) {
             {hub.isHub ? " · primary hub" : ""}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button onClick={() => void simulateTraffic()} disabled={ingesting}>
             {ingesting ? "Writing traffic…" : "Simulate traffic"}
           </Button>
@@ -217,7 +217,7 @@ export function OverviewClient({ data }: { data: Overview }) {
                 }}
               >
                 <span className="text-[13px]">{r.region}</span>
-                <div className="flex items-center gap-4 font-mono text-[12px] tabular text-qs-muted">
+                <div className="flex shrink-0 items-center gap-3 font-mono text-[12px] tabular text-qs-muted sm:gap-4">
                   <span>{r.count.toLocaleString()}</span>
                   <span className={r.down ? "text-qs-danger" : ""}>{r.down} down</span>
                   <span>{formatUsd(r.revenue)}</span>

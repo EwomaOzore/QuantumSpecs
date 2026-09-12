@@ -12,12 +12,14 @@ export function OpsFilterBar() {
   const { filters, hub, replace, selectHub } = useOpsFilters();
 
   return (
-    <div className="flex flex-wrap items-center gap-2 border-b border-qs-border bg-qs-bg-2 px-4 py-2">
+    <div className="flex min-w-0 flex-wrap items-center gap-2 border-b border-qs-border bg-qs-bg-2 px-3 py-2 sm:px-4">
       <select
         value={filters.region || hub.regionSlug}
         onChange={(e) => {
           const region = e.target.value;
-          const next = OPS_HUBS.find((h) => h.regionSlug === region && h.isPrimary) ?? OPS_HUBS.find((h) => h.regionSlug === region);
+          const next =
+            OPS_HUBS.find((h) => h.regionSlug === region && h.isPrimary) ??
+            OPS_HUBS.find((h) => h.regionSlug === region);
           if (next) selectHub(next);
           else replace({ region });
         }}
@@ -37,7 +39,9 @@ export function OpsFilterBar() {
         }}
         className="h-7 rounded border border-qs-border bg-qs-bg px-2 text-[12px]"
       >
-        {OPS_HUBS.filter((h) => h.regionSlug === (filters.region || hub.regionSlug)).map((city) => (
+        {OPS_HUBS.filter(
+          (h) => h.regionSlug === (filters.region || hub.regionSlug),
+        ).map((city) => (
           <option key={city.slug} value={city.slug}>
             {city.name}
           </option>
@@ -93,9 +97,13 @@ export function OpsFilterBar() {
         value={filters.q}
         onChange={(e) => replace({ q: e.target.value })}
         placeholder="Search sites…"
-        className="h-7 min-w-[160px] flex-1 rounded border border-qs-border bg-qs-bg px-2 text-[12px] outline-none"
+        className="h-7 min-w-0 w-full flex-1 rounded border border-qs-border bg-qs-bg px-2 text-[12px] outline-none sm:min-w-[160px]"
       />
-      <span className={cn("font-mono text-[11px] text-qs-faint")}>{hub.name}</span>
+      <span
+        className={cn("hidden font-mono text-[11px] text-qs-faint sm:inline")}
+      >
+        {hub.name}
+      </span>
     </div>
   );
 }

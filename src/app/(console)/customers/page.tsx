@@ -18,7 +18,7 @@ export default async function CustomersPage({
   const customers = await listCustomers(params);
 
   return (
-    <div className="px-6 py-5">
+    <div className="px-4 py-4 sm:px-6 sm:py-5">
       <PageSource path="/customers" className="mb-3 px-0 pt-0" />
       <h1 className="text-[18px] font-medium">Customers</h1>
       <p className="mt-1 text-[13px] text-qs-muted">
@@ -29,7 +29,7 @@ export default async function CustomersPage({
           name="q"
           defaultValue={params.q}
           placeholder="Search merchant"
-          className="h-8 w-56 rounded-md border border-qs-border bg-qs-bg px-2.5 text-[13px]"
+          className="h-8 w-full min-w-0 rounded-md border border-qs-border bg-qs-bg px-2.5 text-[13px] sm:w-56"
         />
         <select
           name="region"
@@ -57,8 +57,8 @@ export default async function CustomersPage({
           Filter
         </button>
       </form>
-      <div className="mt-4 overflow-hidden rounded-lg border border-qs-border">
-        <table className="w-full text-left text-[13px]">
+      <div className="mt-4 overflow-x-auto rounded-lg border border-qs-border qs-scroll">
+        <table className="w-full min-w-[640px] text-left text-[13px]">
           <thead className="bg-qs-bg-2 text-[11px] uppercase tracking-wide text-qs-faint">
             <tr>
               <th className="px-4 py-2 font-medium">Merchant</th>

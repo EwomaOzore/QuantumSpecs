@@ -11,7 +11,7 @@ export const metadata = pageMetadata("/network");
 export default function NetworkPage() {
   return (
     <Suspense fallback={<PageLoader />}>
-      <div>
+      <div className="flex min-h-0 flex-col">
         <PageSource path="/network" />
         <OpsFilterBar />
         <NetworkTable />

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-full flex-col items-center justify-center px-6 py-16">
+    <div className="flex min-h-full flex-col items-center justify-center px-4 py-16 sm:px-6">
       <Mark className="h-8 w-8 text-qs-accent" />
       <p className="mt-4 font-mono text-[12px] uppercase tracking-[0.16em] text-qs-faint">404</p>
       <h1 className="mt-2 text-[22px] font-medium">This desk has no such page</h1>

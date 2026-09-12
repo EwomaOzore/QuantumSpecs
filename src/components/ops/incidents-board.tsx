@@ -21,13 +21,13 @@ export function IncidentsBoard() {
   const open = incidents.filter((i) => i.status !== "resolved").length;
 
   return (
-    <div className="px-6 py-5">
+    <div className="px-4 py-4 sm:px-6 sm:py-5">
       <h1 className="text-[18px] font-medium">Incidents</h1>
       <p className="mt-1 text-[13px] text-qs-muted">
         {hub.name} · {open} active · {incidents.length} matching filters
       </p>
-      <div className="mt-4 overflow-hidden rounded-lg border border-qs-border">
-        <table className="w-full text-left text-[13px]">
+      <div className="mt-4 overflow-x-auto rounded-lg border border-qs-border qs-scroll">
+        <table className="w-full min-w-[720px] text-left text-[13px]">
           <thead className="bg-qs-bg-2 text-[11px] uppercase tracking-wide text-qs-faint">
             <tr>
               <th className="px-4 py-2 font-medium">Incident</th>
