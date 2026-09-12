@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <div className="px-6 py-10">
+    <div className="px-4 py-10 sm:px-6">
       <Breadcrumbs path="/incidents" extra={{ label: "Not found" }} />
       <h1 className="mt-3 text-[20px] font-medium">Record not found</h1>
       <p className="mt-2 max-w-xl text-[13px] text-qs-muted">

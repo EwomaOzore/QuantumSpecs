@@ -46,7 +46,7 @@ export default async function AgentRunPage({ params }: { params: Promise<{ id: s
   };
 
   return (
-    <div className="px-6 py-5">
+    <div className="px-4 py-4 sm:px-6 sm:py-5">
       <PageSource path="/agent/runs" extra={{ label: run.query }} className="mb-3 px-0 pt-0" />
       <h1 className="text-[18px] font-medium">{run.query}</h1>
       <p className="mt-1 text-[12px] text-qs-faint">{formatRelative(run.createdAt)}</p>

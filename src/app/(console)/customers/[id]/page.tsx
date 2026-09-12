@@ -36,8 +36,12 @@ export default async function CustomerPage({
   const { customer, transactions, failed, total } = data;
 
   return (
-    <div className="px-6 py-5">
-      <PageSource path="/customers" extra={{ label: customer.name }} className="mb-3 px-0 pt-0" />
+    <div className="px-4 py-4 sm:px-6 sm:py-5">
+      <PageSource
+        path="/customers"
+        extra={{ label: customer.name }}
+        className="mb-3 px-0 pt-0"
+      />
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-[20px] font-medium">{customer.name}</h1>
@@ -45,59 +49,85 @@ export default async function CustomerPage({
             {customer.company} · {customer.email}
           </p>
         </div>
-        <Badge tone={statusTone(customer.kycStatus)}>{customer.kycStatus}</Badge>
+        <Badge tone={statusTone(customer.kycStatus)}>
+          {customer.kycStatus}
+        </Badge>
       </div>
-      <div className="mt-4 grid gap-3 sm:grid-cols-4">
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Card className="px-4 py-3">
-          <div className="text-[11px] uppercase tracking-[0.14em] text-qs-faint">Region</div>
+          <div className="text-[11px] uppercase tracking-[0.14em] text-qs-faint">
+            Region
+          </div>
           <div className="mt-1 text-[14px]">
-            <RegionFlag code={customer.region.code} /> {customer.region.name} · {customer.region.currency}
+            <RegionFlag code={customer.region.code} /> {customer.region.name} ·{" "}
+            {customer.region.currency}
           </div>
         </Card>
         <Card className="px-4 py-3">
-          <div className="text-[11px] uppercase tracking-[0.14em] text-qs-faint">Monthly volume</div>
-          <div className="mt-1 font-mono text-[16px]">{formatUsd(customer.monthlyVolumeUsd)}</div>
+          <div className="text-[11px] uppercase tracking-[0.14em] text-qs-faint">
+            Monthly volume
+          </div>
+          <div className="mt-1 font-mono text-[16px]">
+            {formatUsd(customer.monthlyVolumeUsd)}
+          </div>
         </Card>
         <Card className="px-4 py-3">
-          <div className="text-[11px] uppercase tracking-[0.14em] text-qs-faint">Risk score</div>
-          <div className={`mt-1 font-mono text-[16px] ${customer.riskScore > 0.6 ? "text-qs-danger" : ""}`}>
+          <div className="text-[11px] uppercase tracking-[0.14em] text-qs-faint">
+            Risk score
+          </div>
+          <div
+            className={`mt-1 font-mono text-[16px] ${customer.riskScore > 0.6 ? "text-qs-danger" : ""}`}
+          >
             {(customer.riskScore * 100).toFixed(0)}
           </div>
         </Card>
         <Card className="px-4 py-3">
-          <div className="text-[11px] uppercase tracking-[0.14em] text-qs-faint">Observed txns</div>
+          <div className="text-[11px] uppercase tracking-[0.14em] text-qs-faint">
+            Observed txns
+          </div>
           <div className="mt-1 font-mono text-[16px]">
-            {total} <span className="text-[12px] text-qs-muted">({failed} failed)</span>
+            {total}{" "}
+            <span className="text-[12px] text-qs-muted">({failed} failed)</span>
           </div>
         </Card>
       </div>
       <Card className="mt-4">
         <CardHeader title="Recent checkouts" />
-        <table className="w-full text-left text-[13px]">
-          <thead className="text-[11px] uppercase tracking-wide text-qs-faint">
-            <tr>
-              <th className="px-4 py-2 font-medium">When</th>
-              <th className="px-4 py-2 font-medium">Amount</th>
-              <th className="px-4 py-2 font-medium">Provider</th>
-              <th className="px-4 py-2 font-medium">Channel</th>
-              <th className="px-4 py-2 font-medium">Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-qs-border">
-            {transactions.map((t) => (
-              <tr key={t.id}>
-                <td className="px-4 py-2 text-qs-muted">{formatRelative(t.createdAt)}</td>
-                <td className="px-4 py-2 font-mono tabular">{formatMoney(t.amount, t.currency)}</td>
-                <td className="px-4 py-2">{t.provider.name}</td>
-                <td className="px-4 py-2 capitalize">{t.channel}</td>
-                <td className="px-4 py-2">
-                  <Badge tone={statusTone(t.status)}>{t.status}</Badge>
-                  {t.errorCode ? <span className="ml-2 font-mono text-[11px] text-qs-faint">{t.errorCode}</span> : null}
-                </td>
+        <div className="overflow-x-auto qs-scroll">
+          <table className="w-full min-w-[560px] text-left text-[13px]">
+            <thead className="text-[11px] uppercase tracking-wide text-qs-faint">
+              <tr>
+                <th className="px-4 py-2 font-medium">When</th>
+                <th className="px-4 py-2 font-medium">Amount</th>
+                <th className="px-4 py-2 font-medium">Provider</th>
+                <th className="px-4 py-2 font-medium">Channel</th>
+                <th className="px-4 py-2 font-medium">Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-qs-border">
+              {transactions.map((t) => (
+                <tr key={t.id}>
+                  <td className="px-4 py-2 text-qs-muted">
+                    {formatRelative(t.createdAt)}
+                  </td>
+                  <td className="px-4 py-2 font-mono tabular">
+                    {formatMoney(t.amount, t.currency)}
+                  </td>
+                  <td className="px-4 py-2">{t.provider.name}</td>
+                  <td className="px-4 py-2 capitalize">{t.channel}</td>
+                  <td className="px-4 py-2">
+                    <Badge tone={statusTone(t.status)}>{t.status}</Badge>
+                    {t.errorCode ? (
+                      <span className="ml-2 font-mono text-[11px] text-qs-faint">
+                        {t.errorCode}
+                      </span>
+                    ) : null}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </Card>
     </div>
   );

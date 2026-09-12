@@ -83,7 +83,7 @@ export function NotificationTray() {
         ) : null}
       </button>
       {open ? (
-        <div className="absolute right-0 z-50 mt-2 w-[360px] overflow-hidden rounded-lg border border-qs-border bg-qs-surface">
+        <div className="absolute right-0 z-50 mt-2 w-[min(360px,calc(100vw-1.5rem))] overflow-hidden rounded-lg border border-qs-border bg-qs-surface">
           <div className="flex items-center justify-between border-b border-qs-border px-3 py-2">
             <div className="text-[12px] font-medium">Notifications</div>
             <button

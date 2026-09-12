@@ -37,7 +37,7 @@ export function CommandPalette() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 pt-[18vh]" onClick={() => setOpen(false)}>
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 px-3 pt-[12vh] sm:pt-[18vh]" onClick={() => setOpen(false)}>
       <div
         className="w-full max-w-lg rounded-lg border border-qs-border bg-qs-surface p-3 shadow-none"
         onClick={(e) => e.stopPropagation()}

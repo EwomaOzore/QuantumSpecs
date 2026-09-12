@@ -14,8 +14,8 @@ export default async function AgentPage({
   const { q } = await searchParams;
   return (
     <div>
-      <PageSource path="/agent" className="border-b border-qs-border px-6 pt-4 pb-0" />
-      <div className="flex flex-wrap items-end justify-between gap-3 border-b border-qs-border px-6 py-4">
+      <PageSource path="/agent" className="border-b border-qs-border px-4 pt-3 pb-0 sm:px-6 sm:pt-4" />
+      <div className="flex flex-wrap items-end justify-between gap-3 border-b border-qs-border px-4 py-4 sm:px-6">
         <div>
           <h1 className="text-[18px] font-medium">Operations analyst</h1>
           <p className="mt-1 text-[13px] text-qs-muted">

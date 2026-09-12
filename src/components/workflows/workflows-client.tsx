@@ -47,7 +47,7 @@ export function WorkflowsClient() {
   const workflows = list.data?.workflows ?? [];
 
   return (
-    <div className="px-6 py-5">
+    <div className="px-4 py-4 sm:px-6 sm:py-5">
       <h1 className="text-[18px] font-medium">Workflows</h1>
       <p className="mt-1 text-[13px] text-qs-muted">
         Playbooks that watch checkout health and deploys, then call the same tools as the analyst.

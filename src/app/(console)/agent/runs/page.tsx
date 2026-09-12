@@ -12,9 +12,9 @@ export default async function AgentRunsPage() {
   const runs = await listAgentRuns(40);
 
   return (
-    <div className="px-6 py-5">
+    <div className="px-4 py-4 sm:px-6 sm:py-5">
       <PageSource path="/agent/runs" className="mb-3 px-0 pt-0" />
-      <div className="flex items-end justify-between gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-[18px] font-medium">Past investigations</h1>
           <p className="mt-1 text-[13px] text-qs-muted">

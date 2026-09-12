@@ -1,6 +1,6 @@
 "use client";
 
-import { Command } from "lucide-react";
+import { Command, Menu } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useSyncExternalStore } from "react";
 import { format } from "date-fns";
@@ -20,30 +20,38 @@ function getServerSnapshot() {
   return 0;
 }
 
-export function Topbar() {
+export function Topbar({ onMenu }: { onMenu: () => void }) {
   const epoch = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const now = epoch ? new Date(epoch * 1000) : null;
   const { data: session } = useSession();
   const operator = session?.user?.name?.split(" ")[0] ?? OPERATOR.name;
 
   return (
-    <header className="flex h-12 shrink-0 items-center justify-between border-b border-qs-border bg-qs-bg px-4">
-      <div className="flex items-center gap-3 text-[12px] text-qs-muted">
-        <span className="font-medium text-qs-text">{TENANT.name}</span>
-        <span className="text-qs-faint">/</span>
-        <span>{TENANT.environment}</span>
-        <span className="hidden text-qs-faint sm:inline">· {session?.user?.role ?? OPERATOR.role}</span>
+    <header className="flex h-12 shrink-0 items-center justify-between gap-2 border-b border-qs-border bg-qs-bg px-3 sm:px-4">
+      <div className="flex min-w-0 items-center gap-2 text-[12px] text-qs-muted sm:gap-3">
+        <button
+          type="button"
+          className="rounded-md p-1.5 text-qs-muted hover:bg-qs-hover hover:text-qs-text lg:hidden"
+          aria-label="Open navigation"
+          onClick={onMenu}
+        >
+          <Menu className="h-4 w-4" />
+        </button>
+        <span className="truncate font-medium text-qs-text">{TENANT.name}</span>
+        <span className="hidden text-qs-faint sm:inline">/</span>
+        <span className="hidden sm:inline">{TENANT.environment}</span>
+        <span className="hidden text-qs-faint md:inline">· {session?.user?.role ?? OPERATOR.role}</span>
       </div>
-      <div className="flex items-center gap-3">
-        <div className="hidden items-center gap-1.5 rounded-md border border-qs-border bg-qs-surface px-2 py-1 text-[11px] text-qs-faint md:flex">
+      <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
+        <div className="hidden items-center gap-1.5 rounded-md border border-qs-border bg-qs-surface px-2 py-1 text-[11px] text-qs-faint xl:flex">
           <Command className="h-3 w-3" />
           K to jump cities
         </div>
-        <div className="font-mono text-[12px] tabular text-qs-muted">
+        <div className="hidden font-mono text-[12px] tabular text-qs-muted md:block">
           {now ? `${format(now, "HH:mm:ss")} UTC` : "—"}
         </div>
         <NotificationTray />
-        <span className="hidden text-[12px] text-qs-muted sm:inline">{operator}</span>
+        <span className="hidden text-[12px] text-qs-muted lg:inline">{operator}</span>
         <button
           type="button"
           className="text-[12px] text-qs-faint hover:text-qs-text"
@@ -51,7 +59,7 @@ export function Topbar() {
         >
           Sign out
         </button>
-        <div className="flex items-center gap-1.5 rounded-full border border-qs-border bg-qs-surface px-2 py-1 text-[11px]">
+        <div className="hidden items-center gap-1.5 rounded-full border border-qs-border bg-qs-surface px-2 py-1 text-[11px] sm:flex">
           <span className="live-dot h-1.5 w-1.5 rounded-full bg-qs-accent" />
           <span className="text-qs-muted">AI</span>
           <span className="text-qs-accent">live</span>

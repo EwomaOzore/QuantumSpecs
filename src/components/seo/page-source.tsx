@@ -5,7 +5,7 @@ import { breadcrumbJsonLd } from "@/lib/site";
 export function PageSource({
   path,
   extra,
-  className = "px-6 pt-4",
+  className = "px-4 pt-3 sm:px-6 sm:pt-4",
 }: {
   path: string;
   extra?: { label: string; href?: string };

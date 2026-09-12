@@ -22,6 +22,8 @@ const origin = siteUrl();
 export const viewport: Viewport = {
   themeColor: "#07090c",
   colorScheme: "dark",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export const metadata: Metadata = {

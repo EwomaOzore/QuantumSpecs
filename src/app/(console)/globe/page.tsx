@@ -10,7 +10,7 @@ export const metadata = pageMetadata("/globe");
 export default function GlobePage() {
   return (
     <Suspense fallback={<PageLoader />}>
-      <div className="flex h-[calc(100dvh-3rem)] min-h-0 flex-col">
+      <div className="flex min-h-0 flex-col lg:h-[calc(100dvh-3rem)]">
         <PageSource path="/globe" className="border-b border-qs-border px-4 py-2" />
         <div className="min-h-0 flex-1">
           <GlobeView />

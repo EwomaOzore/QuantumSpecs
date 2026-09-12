@@ -15,18 +15,26 @@ export default async function LoginPage() {
   if (session?.user) redirect("/");
 
   return (
-    <div className="flex min-h-full items-center justify-center px-4">
+    <div className="flex min-h-dvh items-center justify-center px-4 py-8">
       <JsonLd data={breadcrumbJsonLd("/login")} />
       <div className="w-full max-w-sm">
         <div className="mb-6 flex items-center gap-2.5">
           <Mark className="h-7 w-7 text-qs-accent" />
           <div>
-            <p className="text-[15px] font-semibold tracking-tight">QuantumSpecs</p>
-            <p className="text-[11px] uppercase tracking-[0.16em] text-qs-faint">Kora operations</p>
+            <p className="text-[15px] font-semibold tracking-tight">
+              QuantumSpecs
+            </p>
+            <p className="text-[11px] uppercase tracking-[0.16em] text-qs-faint">
+              Kora operations
+            </p>
           </div>
         </div>
-        <h1 className="text-[22px] font-medium tracking-tight">Sign in to QuantumSpecs</h1>
-        <p className="mt-1 mb-4 text-[13px] text-qs-muted">Kora production operations console.</p>
+        <h1 className="text-[22px] font-medium tracking-tight">
+          Sign in to QuantumSpecs
+        </h1>
+        <p className="mt-1 mb-4 text-[13px] text-qs-muted">
+          Kora production operations console.
+        </p>
         <Suspense>
           <LoginForm
             email={OPERATOR.email}

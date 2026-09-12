@@ -13,6 +13,7 @@ import {
   ShieldAlert,
   Users,
   Workflow,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Mark } from "@/components/ui/mark";
@@ -30,20 +31,35 @@ const NAV = [
   { href: "/settings", label: "Settings", icon: Settings, keepFilters: false },
 ];
 
-export function Sidebar() {
+export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = usePathname();
   const params = useSearchParams();
   const qs = params.toString();
 
   return (
-    <aside className="flex h-full w-[220px] shrink-0 flex-col border-r border-qs-border bg-qs-bg-2">
-      <Link href="/" className="flex items-center gap-2.5 px-4 py-4 hover:bg-qs-hover" aria-label="QuantumSpecs home">
-        <Mark className="h-6 w-6 text-qs-accent" />
-        <div>
-          <div className="text-[13px] font-semibold tracking-tight">QuantumSpecs</div>
-          <div className="text-[10px] uppercase tracking-[0.16em] text-qs-faint">Operations</div>
-        </div>
-      </Link>
+    <aside
+      className={cn(
+        "fixed inset-y-0 left-0 z-40 flex w-[min(220px,85vw)] flex-col border-r border-qs-border bg-qs-bg-2 transition-transform duration-200 lg:static lg:w-[220px] lg:translate-x-0",
+        open ? "translate-x-0" : "-translate-x-full",
+      )}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <Link href="/" className="flex min-w-0 items-center gap-2.5 px-4 py-4 hover:bg-qs-hover" aria-label="QuantumSpecs home">
+          <Mark className="h-6 w-6 shrink-0 text-qs-accent" />
+          <div className="min-w-0">
+            <div className="truncate text-[13px] font-semibold tracking-tight">QuantumSpecs</div>
+            <div className="text-[10px] uppercase tracking-[0.16em] text-qs-faint">Operations</div>
+          </div>
+        </Link>
+        <button
+          type="button"
+          className="mr-2 rounded-md p-1.5 text-qs-muted hover:bg-qs-hover hover:text-qs-text lg:hidden"
+          aria-label="Close navigation"
+          onClick={onClose}
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
       <nav className="flex flex-1 flex-col gap-0.5 overflow-auto px-2 py-1">
         {NAV.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -54,13 +70,13 @@ export function Sidebar() {
               key={item.href}
               href={href}
               className={cn(
-                "flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-[13px] transition-colors",
+                "flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] transition-colors lg:py-1.5",
                 active
                   ? "bg-qs-elevated text-qs-text"
                   : "text-qs-muted hover:bg-qs-hover hover:text-qs-text",
               )}
             >
-              <Icon className={cn("h-4 w-4", active ? "text-qs-accent" : "text-qs-faint")} />
+              <Icon className={cn("h-4 w-4 shrink-0", active ? "text-qs-accent" : "text-qs-faint")} />
               {item.label}
             </Link>
           );

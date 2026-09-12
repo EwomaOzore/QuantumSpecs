@@ -4,7 +4,10 @@ import type { HTMLAttributes, ReactNode } from "react";
 export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("rounded-lg border border-qs-border bg-qs-surface", className)}
+      className={cn(
+        "rounded-lg border border-qs-border bg-qs-surface",
+        className,
+      )}
       {...props}
     />
   );
@@ -20,10 +23,12 @@ export function CardHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex items-start justify-between gap-3 border-b border-qs-border px-4 py-3">
-      <div>
+    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-qs-border px-4 py-3">
+      <div className="min-w-0">
         <h2 className="text-[13px] font-medium text-qs-text">{title}</h2>
-        {description ? <p className="mt-0.5 text-[12px] text-qs-muted">{description}</p> : null}
+        {description ? (
+          <p className="mt-0.5 text-[12px] text-qs-muted">{description}</p>
+        ) : null}
       </div>
       {action}
     </div>
